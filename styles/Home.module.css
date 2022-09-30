@@ -1,0 +1,12 @@
+.container {
+  padding: 2rem;
+  display: grid;
+  place-items: center;
+  height: 100vh;
+}
+
+.chessBoard {
+  width: 80vh;
+  height: 80vh;
+  background-color: white;
+}
