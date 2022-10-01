@@ -6,7 +6,7 @@ export default function Chessboard() {
   return (
     <div>
       {squares.map((e) => (
-        <h1>{e.coord}</h1>
+        <h1 key={e.coord}>{e.coord}</h1>
       ))}
     </div>
   );
