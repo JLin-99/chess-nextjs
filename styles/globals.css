@@ -1,3 +1,10 @@
+:root {
+  --board-size: 80vh;
+  --board-bg-color: #967E76;
+  --white-square-bg-color: #EEE3CB;
+  --black-square-bg-color: #D7C0AE;
+}
+
 html {
   font-size: 62.5%;
 }
