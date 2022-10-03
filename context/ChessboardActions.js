@@ -20,7 +20,7 @@ export const getSquares = () => {
         square.piece = {
           type: piece.type,
           color: piece.color,
-          img: pieces[piece.color + piece.type.toUpperCase()],
+          img: pieces[piece.color + piece.type.toUpperCase()].src,
         };
       }
 
