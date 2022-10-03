@@ -16,3 +16,10 @@
 .blackSquare {
   background-color: var(--black-square-bg-color);
 }
+
+.whiteSquare p,
+.blackSquare p {
+  position: fixed;
+  color: var(--board-bg-color);
+  padding-left: 0.2rem;
+}
