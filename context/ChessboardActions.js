@@ -1,4 +1,5 @@
 import { Chess } from "chess.js";
+import pieces from "./piecesPath.js";
 
 const chess = new Chess();
 
@@ -19,6 +20,7 @@ export const getSquares = () => {
         square.piece = {
           type: piece.type,
           color: piece.color,
+          img: pieces[piece.color + piece.type.toUpperCase()],
         };
       }
 
