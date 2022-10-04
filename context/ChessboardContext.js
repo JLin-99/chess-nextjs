@@ -7,6 +7,7 @@ export const ChessboardProvider = ({ children }) => {
   const initialState = {
     squares: [],
     activePiece: null,
+    activeSquare: null,
   };
 
   const [state, dispatch] = useReducer(chessboardReducer, initialState);

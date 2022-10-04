@@ -4,6 +4,8 @@ const chessboardReducer = (state, action) => {
       return state.squares ? { ...state, squares: action.payload } : state;
     case "SET_ACTIVE_PIECE":
       return { ...state, activePiece: action.payload };
+    case "SET_ACTIVE_SQUARE":
+      return { ...state, activeSquare: action.payload };
     default:
       return state;
   }
