@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import ChessboardContext from "../context/ChessboardContext";
-import { movePiece } from "../context/ChessboardActions";
+import { dragPiece, getValidMovesNodes } from "../context/ChessboardActions";
 import styles from "../styles/Chessboard.module.css";
 
 export default function Piece({ piece }) {
@@ -8,10 +8,15 @@ export default function Piece({ piece }) {
 
   const handleMouseDown = (e) => {
     const pieceNode = e.target;
+    pieceNode.parentElement.classList.toggle(styles.activeSquare);
 
-    movePiece(e);
+    dragPiece(e);
     dispatch({ type: "SET_ACTIVE_PIECE", payload: pieceNode });
     dispatch({ type: "SET_ACTIVE_SQUARE", payload: pieceNode.parentElement });
+    dispatch({
+      type: "SET_POSSIBLE_MOVES",
+      payload: getValidMovesNodes(pieceNode.parentElement.id),
+    });
   };
 
   return (

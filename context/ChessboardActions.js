@@ -1,5 +1,6 @@
 import { Chess } from "chess.js";
 import pieces from "./piecesPath.js";
+import styles from "../styles/Chessboard.module.css";
 
 const chess = new Chess();
 
@@ -31,7 +32,24 @@ export const getSquares = () => {
   return squares;
 };
 
-export const movePiece = (e, pieceNode = e.target) => {
+export const getValidMovesNodes = (coord) => {
+  const moves = chess.moves({ square: coord, verbose: true });
+  const squareNodes = moves.map((move) => {
+    const square = document.getElementById(move.to);
+
+    if (move.flags === "n") {
+      square.classList.toggle(styles.possibleMove);
+    } else {
+      square.classList.toggle(styles.specialMove);
+    }
+
+    return square;
+  });
+
+  return squareNodes;
+};
+
+export const dragPiece = (e, pieceNode = e.target) => {
   pieceNode.style.position = "fixed";
   pieceNode.style.left = e.clientX - pieceNode.offsetWidth / 2 + "px";
   pieceNode.style.top = e.clientY - pieceNode.offsetHeight / 2 + "px";

@@ -1,11 +1,11 @@
 import { useContext, useEffect } from "react";
 import ChessboardContext from "../context/ChessboardContext";
-import { dropPiece, getSquares, movePiece } from "../context/ChessboardActions";
+import { dropPiece, getSquares, dragPiece } from "../context/ChessboardActions";
 import styles from "../styles/Chessboard.module.css";
 import Square from "./Square";
 
 export default function Chessboard() {
-  const { squares, activePiece, activeSquare, dispatch } =
+  const { squares, activePiece, activeSquare, possibleMoves, dispatch } =
     useContext(ChessboardContext);
 
   useEffect(() => {
@@ -15,19 +15,28 @@ export default function Chessboard() {
   const handlePieceDrop = (e) => {
     if (!activePiece) return;
 
-    const landingSquare = e.target;
-    console.log(landingSquare.id);
+    const ladingTarget = e.target;
 
+    if (ladingTarget.classList.contains(styles.square)) {
+      console.log(
+        `Trying "From: ${activeSquare.id} To: ${ladingTarget.id}" Square without piece`
+      );
+      console.log(possibleMoves);
+    }
+
+    // Verificar si es movimiento válido y actualizar la lista
     dropPiece(activePiece);
-    dispatch({ type: "CLEAR_ACTIVE_PIECE", payload: activePiece });
-    dispatch({ type: "CLEAR_ACTIVE_SQUARE", payload: activeSquare });
+
+    dispatch({ type: "CLEAR_ACTIVE_PIECE" });
+    dispatch({ type: "CLEAR_ACTIVE_SQUARE" });
+    dispatch({ type: "CLEAR_POSSIBLE_MOVES" });
   };
 
   return (
     <div
       className={styles.chessboard}
       onMouseMove={(e) => {
-        activePiece && movePiece(e, activePiece);
+        activePiece && dragPiece(e, activePiece);
       }}
       onMouseUp={handlePieceDrop}
     >
