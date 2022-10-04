@@ -36,3 +36,7 @@ export const movePiece = (e, pieceNode = e.target) => {
   pieceNode.style.left = e.clientX - pieceNode.offsetWidth / 2 + "px";
   pieceNode.style.top = e.clientY - pieceNode.offsetHeight / 2 + "px";
 };
+
+export const dropPiece = (pieceNode) => {
+  pieceNode.style.position = "absolute";
+};

@@ -5,6 +5,7 @@
   gap: 0.2rem;
   padding: 0.2rem;
   user-select: none;
+  -webkit-user-select: none;
 }
 
 .square {
@@ -39,6 +40,5 @@
 
 .piece:active {
   z-index: 5000;
-  /* pointer-events: none; */
-  cursor: grabbing;
+  pointer-events: none;
 }
