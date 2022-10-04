@@ -1,5 +1,6 @@
 :root {
   --board-size: 80vh;
+  --square-size: calc(var(--board-size) / 8);
   --board-bg-color: #967E76;
   --white-square-bg-color: #EEE3CB;
   --black-square-bg-color: #D7C0AE;

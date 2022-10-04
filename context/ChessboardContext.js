@@ -6,6 +6,7 @@ const ChessboardContext = createContext();
 export const ChessboardProvider = ({ children }) => {
   const initialState = {
     squares: [],
+    activePiece: null,
   };
 
   const [state, dispatch] = useReducer(chessboardReducer, initialState);

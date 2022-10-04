@@ -4,7 +4,9 @@ import Piece from "./Piece";
 export default function Square({ sqr }) {
   return (
     <div
-      className={sqr.color === "w" ? styles.whiteSquare : styles.blackSquare}
+      className={`${styles.square} ${
+        sqr.color === "w" ? styles.whiteSquare : styles.blackSquare
+      }`}
       id={sqr.coord}
     >
       <p>{sqr.coord}</p>

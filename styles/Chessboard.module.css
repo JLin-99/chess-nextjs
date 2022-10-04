@@ -1,12 +1,17 @@
 .chessboard {
-  width: var(--board-size);
-  height: var(--board-size);
+  /* width: var(--board-size);
+  height: var(--board-size); */
   background-color: var(--board-bg-color);
   display: grid;
   grid-template: repeat(8, 1fr) / repeat(8, 1fr);
   gap: 0.2rem;
   padding: 0.2rem;
 
+}
+
+.square {
+  width: var(--square-size);
+  height: var(--square-size);
 }
 
 .whiteSquare {
@@ -22,4 +27,13 @@
   position: fixed;
   color: var(--board-bg-color);
   padding-left: 0.2rem;
+}
+
+.piece {
+  cursor: grab;
+  width: inherit;
+  height: inherit;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: auto;
 }

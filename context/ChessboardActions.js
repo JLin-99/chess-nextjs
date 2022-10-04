@@ -30,3 +30,13 @@ export const getSquares = () => {
 
   return squares;
 };
+
+export const grabPiece = (e) => {
+  const pieceNode = e.target;
+
+  pieceNode.style.position = "fixed";
+  pieceNode.style.left = e.clientX - pieceNode.offsetWidth / 2 + "px";
+  pieceNode.style.top = e.clientY - pieceNode.offsetHeight / 2 + "px";
+
+  return pieceNode;
+};
