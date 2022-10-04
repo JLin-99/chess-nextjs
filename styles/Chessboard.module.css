@@ -1,12 +1,10 @@
 .chessboard {
-  /* width: var(--board-size);
-  height: var(--board-size); */
   background-color: var(--board-bg-color);
   display: grid;
   grid-template: repeat(8, 1fr) / repeat(8, 1fr);
   gap: 0.2rem;
   padding: 0.2rem;
-
+  user-select: none;
 }
 
 .square {
@@ -36,4 +34,11 @@
   background-repeat: no-repeat;
   background-position: center;
   background-size: auto;
+  /* z-index: -1; */
+}
+
+.piece:active {
+  z-index: 5000;
+  /* pointer-events: none; */
+  cursor: grabbing;
 }
