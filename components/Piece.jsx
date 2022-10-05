@@ -29,9 +29,9 @@ export default function Piece({ piece }) {
   const handleMouseEnter = (e) => {
     const pieceNode = e.target;
     if (validMoves(pieceNode.parentElement.id).length) {
-      pieceNode.classList.add(styles.canMove);
+      pieceNode.classList.add(styles.canGrab);
     } else {
-      pieceNode.classList.remove(styles.canMove);
+      pieceNode.classList.remove(styles.canGrab);
     }
   };
 

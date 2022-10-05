@@ -5,9 +5,7 @@ import {
   getSquares,
   dragPiece,
   clearValidMovesClasses,
-  mapSquares,
   makeMove,
-  validMoves,
 } from "../context/ChessboardActions";
 import styles from "../styles/Chessboard.module.css";
 import Square from "./Square";

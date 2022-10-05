@@ -14,7 +14,7 @@
   position: relative;
 }
 
-.canMove:hover {
+.canGrab:hover {
   box-shadow: 0 0 5px rgb(238, 81, 81);
   cursor: grab;
 }
@@ -53,10 +53,38 @@
 }
 
 .possibleMove {
-  box-shadow: 0 0 5px rgba(81, 203, 238);
+  /* box-shadow: 0 0 0.5rem #B7C4CF; */
+  box-shadow: 0 0 0.5rem 0.1rem var(--board-bg-color);
+  z-index: 1;
 }
 
-.specialMove {
-  box-shadow: 0 0 5px rgb(238, 81, 81);
+.possibleMove::before {
+  content: "";
+  height: calc(var(--square-size) / 3);
+  width: calc(var(--square-size) / 3);
+  background-color: var(--board-bg-color);
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  margin: auto;
+  opacity: 0.8;
+}
 
+.possibleMove:hover,
+.captureMove:hover,
+.promotionMove:hover {
+  background-color: #B7C4CF;
+}
+
+.possibleMove:hover::before {
+  opacity: 0.2;
+}
+
+.captureMove,
+.promotionMove {
+  box-shadow: 0 0 1rem 0.1rem rgb(238, 81, 81);
+  z-index: 1;
 }

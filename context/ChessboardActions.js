@@ -67,12 +67,12 @@ export const getValidMovesNodes = (coord) => {
   const validMovesNodes = moves.map((move) => {
     const square = document.getElementById(move.to);
 
-    if (move.flags === "n") {
+    if (move.flags === "n" || move.flags === "b") {
       square.classList.add(styles.possibleMove);
     } else if (move.promotion) {
-      square.classList.add(styles.specialMove);
+      square.classList.add(styles.promotionMove);
     } else {
-      square.classList.add(styles.specialMove);
+      square.classList.add(styles.captureMove);
     }
 
     return square;
@@ -85,6 +85,7 @@ export const clearValidMovesClasses = (squareNodes) => {
   squareNodes.forEach((square) => {
     square.classList.remove(styles.possibleMove);
     square.classList.remove(styles.specialMove);
+    square.classList.remove(styles.captureMove);
   });
 };
 
