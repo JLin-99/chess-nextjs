@@ -11,6 +11,7 @@
 .square {
   width: var(--square-size);
   height: var(--square-size);
+  position: relative;
 }
 
 .whiteSquare {
@@ -53,5 +54,5 @@
 
 .specialMove {
   box-shadow: 0 0 5px rgb(238, 81, 81);
-  z-index: 1;
+
 }

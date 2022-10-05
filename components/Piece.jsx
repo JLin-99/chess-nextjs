@@ -8,15 +8,18 @@ export default function Piece({ piece }) {
 
   const handleMouseDown = (e) => {
     const pieceNode = e.target;
-    pieceNode.parentElement.classList.toggle(styles.activeSquare);
+    const validMoves = getValidMovesNodes(pieceNode.parentElement.id);
 
-    dragPiece(e);
-    dispatch({ type: "SET_ACTIVE_PIECE", payload: pieceNode });
-    dispatch({ type: "SET_ACTIVE_SQUARE", payload: pieceNode.parentElement });
-    dispatch({
-      type: "SET_POSSIBLE_MOVES",
-      payload: getValidMovesNodes(pieceNode.parentElement.id),
-    });
+    if (validMoves.length !== 0) {
+      pieceNode.parentElement.classList.toggle(styles.activeSquare);
+      dragPiece(e);
+      dispatch({ type: "SET_ACTIVE_PIECE", payload: pieceNode });
+      dispatch({ type: "SET_ACTIVE_SQUARE", payload: pieceNode.parentElement });
+      dispatch({
+        type: "SET_POSSIBLE_MOVES",
+        payload: validMoves,
+      });
+    }
   };
 
   return (

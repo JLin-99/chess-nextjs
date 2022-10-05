@@ -14,6 +14,11 @@ const chessboardReducer = (state, action) => {
       return { ...state, activeSquare: null };
     case "CLEAR_ACTIVE_SQUARE":
       return { ...state, possibleMoves: [] };
+    case "MOVE_PIECE":
+      return {
+        ...state,
+        squares: action.payload,
+      };
     default:
       return state;
   }
