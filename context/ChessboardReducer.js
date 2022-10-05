@@ -2,6 +2,8 @@ const chessboardReducer = (state, action) => {
   switch (action.type) {
     case "INITIALIZE_SQUARES":
       return state.squares ? { ...state, squares: action.payload } : state;
+    case "UPDATE_SQUARES":
+      return { ...state, squares: action.payload };
     case "SET_ACTIVE_PIECE":
       return { ...state, activePiece: action.payload };
     case "SET_ACTIVE_SQUARE":
@@ -14,11 +16,6 @@ const chessboardReducer = (state, action) => {
       return { ...state, activeSquare: null };
     case "CLEAR_ACTIVE_SQUARE":
       return { ...state, possibleMoves: [] };
-    case "MOVE_PIECE":
-      return {
-        ...state,
-        squares: action.payload,
-      };
     default:
       return state;
   }

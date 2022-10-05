@@ -24,7 +24,7 @@ export default function Chessboard() {
     if (!activePiece) return;
 
     let ladingTarget = e.target;
-    console.log(ladingTarget);
+
     if (ladingTarget.classList.contains(styles.piece)) {
       ladingTarget = ladingTarget.parentElement;
     }
@@ -33,17 +33,25 @@ export default function Chessboard() {
       const move = { from: activeSquare.id, to: ladingTarget.id };
 
       if (possibleMoves.includes(ladingTarget)) {
-        if (makeMove(move)) {
-          dispatch({
-            type: "MOVE_PIECE",
-            payload: mapSquares(squares, move),
-          });
-        } else if (validMoves(move.from)) {
-          console.log(validMoves(move.from));
-          makeMove({ ...move, promotion: "q" });
+        const res = makeMove(move);
+        if (!res && possibleMoves) {
+          let promotionPiece = "q";
+          makeMove({ ...move, promotion: promotionPiece });
         }
+
+        dispatch({
+          type: "UPDATE_SQUARES",
+          payload: getSquares(),
+        });
       }
     }
+
+    leavePiece();
+  };
+
+  const leavePiece = () => {
+    if (!activePiece) return;
+
     dropPiece(activePiece);
 
     dispatch({ type: "CLEAR_ACTIVE_PIECE" });
@@ -62,6 +70,7 @@ export default function Chessboard() {
         activePiece && dragPiece(e, activePiece);
       }}
       onMouseUp={handlePieceDrop}
+      onMouseLeave={leavePiece}
     >
       {squares.map((sqr) => (
         <Square key={sqr.coord} sqr={sqr} />

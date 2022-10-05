@@ -28,28 +28,31 @@ export const getSquares = () => {
       squares.push(square);
     });
   });
-
+  console.log(squares);
   return squares;
 };
 
-export const mapSquares = (squares, move) => {
-  console.log(move);
-  const piece = squares.find((sqr) => sqr.coord === move.from).piece;
-  console.log(piece);
+// export const mapSquares = (squares, move, promotionPiece = "") => {
+//   let piece = squares.find((sqr) => sqr.coord === move.from).piece;
+//   if (promotionPiece) {
+//     piece.type = promotionPiece;
+//     piece.img = pieces[piece.color + piece.type.toUpperCase()].src;
+//   }
 
-  return squares.map((sqr) => {
-    if (sqr.piece === piece) {
-      sqr.piece = null;
-    }
-    if (sqr.coord === move.to) {
-      sqr.piece = piece;
-    }
-    return sqr;
-  });
-};
+//   return squares.map((sqr) => {
+//     if (sqr.piece === piece) {
+//       sqr.piece = null;
+//     }
+//     if (sqr.coord === move.to) {
+//       sqr.piece = piece;
+//     }
+//     return sqr;
+//   });
+// };
 
 export const makeMove = (move) => {
   const a = chess.move(move);
+  console.log(a);
   console.log(chess.ascii());
   return a;
 };
@@ -60,13 +63,16 @@ export const validMoves = (move) => {
 
 export const getValidMovesNodes = (coord) => {
   const moves = chess.moves({ square: coord, verbose: true });
+
   const validMovesNodes = moves.map((move) => {
     const square = document.getElementById(move.to);
 
     if (move.flags === "n") {
-      square.classList.toggle(styles.possibleMove);
+      square.classList.add(styles.possibleMove);
+    } else if (move.promotion) {
+      square.classList.add(styles.specialMove);
     } else {
-      square.classList.toggle(styles.specialMove);
+      square.classList.add(styles.specialMove);
     }
 
     return square;
