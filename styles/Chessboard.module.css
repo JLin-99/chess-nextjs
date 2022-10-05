@@ -14,6 +14,11 @@
   position: relative;
 }
 
+.canMove:hover {
+  box-shadow: 0 0 5px rgb(238, 81, 81);
+  cursor: grab;
+}
+
 .whiteSquare {
   background-color: var(--white-square-bg-color);
 }
@@ -30,7 +35,6 @@
 }
 
 .piece {
-  cursor: grab;
   width: inherit;
   height: inherit;
   background-repeat: no-repeat;
