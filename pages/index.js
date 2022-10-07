@@ -2,8 +2,30 @@ import Head from "next/head";
 import Chessboard from "../components/Chessboard";
 import { ChessboardProvider } from "../context/ChessboardContext";
 import styles from "../styles/Home.module.css";
+import io from "socket.io-client";
+import { useEffect } from "react";
+
+let socket;
 
 export default function Home() {
+  useEffect(() => {
+    socketInitializer();
+  }, []);
+
+  const socketInitializer = async () => {
+    await fetch("api/socket");
+
+    socket = io();
+
+    socket.on("connect", () => {
+      console.log("Connected to server");
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Disconnected from server");
+    });
+  };
+
   return (
     <div className={styles.container}>
       <Head>
@@ -13,7 +35,9 @@ export default function Home() {
       </Head>
 
       <ChessboardProvider>
+        <div>Options</div>
         <Chessboard />
+        <div>Chat</div>
       </ChessboardProvider>
     </div>
   );
