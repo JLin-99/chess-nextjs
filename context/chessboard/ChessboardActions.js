@@ -1,6 +1,6 @@
 import { Chess } from "chess.js";
-import pieces from "./piecesPath.js";
-import styles from "../styles/Chessboard.module.css";
+import pieces from "../piecesPath.js";
+import styles from "../../styles/Chessboard.module.css";
 
 const chess = new Chess();
 

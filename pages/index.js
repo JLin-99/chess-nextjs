@@ -1,24 +1,27 @@
 import Head from "next/head";
 import Chessboard from "../components/Chessboard";
-import { ChessboardProvider } from "../context/ChessboardContext";
+import { ChessboardProvider } from "../context/chessboard/ChessboardContext";
 import styles from "../styles/Home.module.css";
 import io from "socket.io-client";
-import { useEffect } from "react";
-
-let socket;
+import { useEffect, useState } from "react";
+import Options from "../components/Options";
+import Chat from "../components/Chat";
+import { SocketProvider } from "../context/socket/SocketContext";
 
 export default function Home() {
+  const [socket, setSocket] = useState(null);
+
   useEffect(() => {
     socketInitializer();
   }, []);
 
   const socketInitializer = async () => {
     await fetch("api/socket");
-
-    socket = io();
+    const socket = io();
 
     socket.on("connect", () => {
       console.log("Connected to server");
+      setSocket(socket);
     });
 
     socket.on("disconnect", () => {
@@ -34,11 +37,13 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <ChessboardProvider>
-        <div>Options</div>
-        <Chessboard />
-        <div>Chat</div>
-      </ChessboardProvider>
+      <SocketProvider socket={socket}>
+        <ChessboardProvider>
+          <Options />
+          <Chessboard />
+          <Chat />
+        </ChessboardProvider>
+      </SocketProvider>
     </div>
   );
 }

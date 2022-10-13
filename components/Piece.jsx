@@ -1,10 +1,10 @@
 import { useContext } from "react";
-import ChessboardContext from "../context/ChessboardContext";
+import ChessboardContext from "../context/chessboard/ChessboardContext";
 import {
   dragPiece,
   getValidMovesNodes,
   validMoves,
-} from "../context/ChessboardActions";
+} from "../context/chessboard/ChessboardActions";
 import styles from "../styles/Chessboard.module.css";
 
 export default function Piece({ piece }) {

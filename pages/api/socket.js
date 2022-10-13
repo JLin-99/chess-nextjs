@@ -1,9 +1,8 @@
 import { Server } from "socket.io";
-import messageHandler from "../../utils/sockets/messageHandler";
+import gameLogicHandler from "../../utils/sockets/server/gameLogicHandler";
 
 export default function SocketHandler(req, res) {
   if (res.socket.server.io) {
-    // console.log("server socket already set up");
     res.end();
     return;
   }
@@ -13,7 +12,7 @@ export default function SocketHandler(req, res) {
 
   const onConnection = (socket) => {
     console.log("new connection " + socket.id);
-    messageHandler(io, socket);
+    gameLogicHandler(io, socket);
   };
 
   io.on("connection", onConnection);

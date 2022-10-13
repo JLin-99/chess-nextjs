@@ -1,24 +1,27 @@
 import { useContext, useEffect } from "react";
-import ChessboardContext from "../context/ChessboardContext";
+import ChessboardContext from "../context/chessboard/ChessboardContext";
 import {
   dropPiece,
   getSquares,
   dragPiece,
   clearValidMovesClasses,
   makeMove,
-} from "../context/ChessboardActions";
+} from "../context/chessboard/ChessboardActions";
 import styles from "../styles/Chessboard.module.css";
 import Square from "./Square";
+import SocketContext from "../context/socket/SocketContext";
 
 export default function Chessboard() {
   const { squares, activePiece, activeSquare, possibleMoves, dispatch } =
     useContext(ChessboardContext);
+  const { socket } = useContext(SocketContext);
 
   useEffect(() => {
     dispatch({ type: "INITIALIZE_SQUARES", payload: getSquares() });
   }, []);
 
   const handlePieceDrop = (e) => {
+    console.log(socket);
     if (!activePiece) return;
 
     let ladingTarget = e.target;

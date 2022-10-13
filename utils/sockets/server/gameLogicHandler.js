@@ -1,5 +1,4 @@
 import { Chess } from "chess.js";
-const usersOnline = [];
-const gamesInSession = [];
+const gamesInSession = {};
 
 export default (io, socket) => {};
