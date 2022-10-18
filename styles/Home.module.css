@@ -5,4 +5,10 @@
   place-items: center;
   height: 100vh;
   gap: 2.5rem;
+  background-color: #967E76AA;
+}
+
+.blur {
+  filter: blur(4px);
+  -webkit-filter: blur(4px);
 }
