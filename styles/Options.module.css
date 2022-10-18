@@ -1,0 +1,9 @@
+.container {
+  background-color: grey;
+  place-self: stretch;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  place-content: space-evenly;
+}

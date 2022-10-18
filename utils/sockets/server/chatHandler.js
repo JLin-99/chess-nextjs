@@ -1,4 +1,9 @@
 export default (io, socket) => {
+  socket.on("setUsername", (username) => {
+    socket.username = username;
+    io.to(socket.id).emit("setUsername", socket.username);
+  });
+
   socket.on("privateMessage", () => {
     io.to(socket.id).emit("privateMessage", "testing " + socket.id);
   });

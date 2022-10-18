@@ -4,17 +4,18 @@ import styles from "../styles/Chat.module.css";
 
 export default function Chat() {
   const [username, setUsername] = useState("username");
-  const [messages, setMessages] = useState([
-    { author: username, message: "hola" },
-    { author: username, message: "probando" },
-  ]);
+  const [messages, setMessages] = useState([]);
   const { socket } = useContext(SocketContext);
 
   useEffect(() => {
     if (!socket) {
       return;
     }
-    setUsername(socket.id.substring(0, 5));
+    // setUsername(socket.id.substring(0, 5));
+    socket.emit("setUsername", "user-" + socket.id.substring(0, 5));
+    socket.on("setUsername", (username) => {
+      setUsername(username);
+    });
 
     socket.on("privateMessage", (message) => {
       setMessages((currentMsgs) => [

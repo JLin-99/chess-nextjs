@@ -7,9 +7,12 @@ import { useEffect, useState } from "react";
 import Options from "../components/Options";
 import Chat from "../components/Chat";
 import { SocketProvider } from "../context/socket/SocketContext";
+import Login from "../components/Login";
+import Spinner from "../components/Spinner";
 
 export default function Home() {
   const [socket, setSocket] = useState(null);
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
     socketInitializer();
@@ -37,13 +40,18 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <SocketProvider socket={socket}>
-        <ChessboardProvider>
-          <Options />
-          <Chessboard />
-          <Chat />
-        </ChessboardProvider>
-      </SocketProvider>
+      {!socket ? (
+        <Spinner />
+      ) : (
+        <SocketProvider socket={socket} username={username}>
+          <ChessboardProvider>
+            {/* {!username && <Login setUsername={setUsername} />} */}
+            <Options />
+            <Chessboard />
+            <Chat />
+          </ChessboardProvider>
+        </SocketProvider>
+      )}
     </div>
   );
 }
