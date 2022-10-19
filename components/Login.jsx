@@ -4,8 +4,25 @@ import styles from "../styles/Login.module.css";
 export default function Login({ setUsername }) {
   const [user, setUser] = useState("");
 
-  const handleOnSubmit = (e) => {
+  const createNewGame = (e) => {
     e.preventDefault();
+    if (!user) {
+      console.log("choose a username");
+      return;
+    }
+
+    // TODO: Create new game in server
+    setUsername(user);
+  };
+
+  const joinGame = (e) => {
+    e.preventDefault();
+    if (!user) {
+      console.log("choose a username");
+      return;
+    }
+
+    // TODO: Join in game
     setUsername(user);
   };
 
@@ -22,8 +39,8 @@ export default function Login({ setUsername }) {
           />
         </div>
         <div className={styles.options}>
-          <button onClick={handleOnSubmit}>Create New Game!</button>
-          <button>Join Game!</button>
+          <button onClick={createNewGame}>Create New Game!</button>
+          <button onClick={joinGame}>Join Game!</button>
         </div>
       </div>
     </div>

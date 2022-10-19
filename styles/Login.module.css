@@ -48,6 +48,9 @@
 .popupInner .username input {
   padding-bottom: 1rem;
   font-size: 2rem;
+  text-align: center;
+  width: 50%;
+  margin: auto;
 }
 
 .popupInner .options {
