@@ -12,7 +12,7 @@ import Spinner from "../components/Spinner";
 
 export default function Home() {
   const [socket, setSocket] = useState(null);
-  const [username, setUsername] = useState("");
+  const [activeGame, setActiveGame] = useState(false);
 
   useEffect(() => {
     socketInitializer();
@@ -43,10 +43,12 @@ export default function Home() {
       {!socket ? (
         <Spinner />
       ) : (
-        <SocketProvider socket={socket} username={username}>
-          {!username && <Login setUsername={setUsername} />}
+        <SocketProvider socket={socket} activeGame={activeGame}>
+          {!activeGame && <Login setActiveGame={setActiveGame} />}
           <ChessboardProvider>
-            <div className={`${styles.container} ${!username && styles.blur}`}>
+            <div
+              className={`${styles.container} ${!activeGame && styles.blur}`}
+            >
               <Options />
               <Chessboard />
               <Chat />
