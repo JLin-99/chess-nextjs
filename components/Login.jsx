@@ -1,34 +1,29 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import SocketContext from "../context/socket/SocketContext";
 import styles from "../styles/Login.module.css";
 
 export default function Login({ setActiveGame }) {
-  const [user, setUser] = useState("");
+  const [username, setUsername] = useState("");
   const [activeOption, setActiveOption] = useState("");
 
+  const { dispatch } = useContext(SocketContext);
+
   const createNewGame = (e) => {
-    e.preventDefault();
-    if (!user) {
-      console.log("choose a username");
+    if (!username) {
       return;
     }
 
+    dispatch({ type: "SET_USERNAME", payload: username });
     setActiveOption("CreateGame");
-
-    // TODO: Create new game in server
-    // setActiveGame(true);
   };
 
   const joinGame = (e) => {
-    e.preventDefault();
-    if (!user) {
-      console.log("choose a username");
+    if (!username) {
       return;
     }
 
+    dispatch({ type: "SET_USERNAME", payload: username });
     setActiveOption("JoinGame");
-
-    // TODO: Join in game
-    // setActiveGame(true);
   };
 
   return (
@@ -42,15 +37,15 @@ export default function Login({ setActiveGame }) {
               <label>Choose your username:</label>
               <input
                 type="text"
-                value={user}
-                onChange={(e) => setUser(e.target.value)}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
             </div>
             <div className={styles.options}>
-              <button onClick={createNewGame} disabled={!user}>
+              <button onClick={createNewGame} disabled={!username}>
                 Create New Game!
               </button>
-              <button onClick={joinGame} disabled={!user}>
+              <button onClick={joinGame} disabled={!username}>
                 Join Game!
               </button>
             </div>

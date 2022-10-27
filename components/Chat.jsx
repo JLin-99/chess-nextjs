@@ -3,19 +3,13 @@ import SocketContext from "../context/socket/SocketContext";
 import styles from "../styles/Chat.module.css";
 
 export default function Chat() {
-  const [username, setUsername] = useState("username");
   const [messages, setMessages] = useState([]);
-  const { socket } = useContext(SocketContext);
+  const { socket, username } = useContext(SocketContext);
 
   useEffect(() => {
     if (!socket) {
       return;
     }
-    // setUsername(socket.id.substring(0, 5));
-    socket.emit("setUsername", "user-" + socket.id.substring(0, 5));
-    socket.on("setUsername", (username) => {
-      setUsername(username);
-    });
 
     socket.on("privateMessage", (message) => {
       setMessages((currentMsgs) => [
@@ -31,6 +25,10 @@ export default function Chat() {
       ]);
     });
   }, [socket]);
+
+  useEffect(() => {
+    if (username) socket.emit("setUsername", username);
+  }, [username]);
 
   return (
     <div className={styles.container}>
