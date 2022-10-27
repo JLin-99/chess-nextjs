@@ -16,8 +16,8 @@
 .popupInner {
   position: relative;
   opacity: 1;
-  width: 50vw;
-  height: 50vh;
+  min-width: 50vw;
+  min-height: 50vh;
   background-color: var(--black-square-bg-color);
   border-radius: 2rem;
   padding: 2rem;

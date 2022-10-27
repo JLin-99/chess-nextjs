@@ -1,10 +1,18 @@
-import { createContext } from "react";
+import { createContext, useReducer } from "react";
+import socketReducer from "./SocketReducer";
 
 const SocketContext = createContext();
 
 export const SocketProvider = ({ socket, children }) => {
+  const initialState = {
+    socket,
+    username: "",
+  };
+
+  const [state, dispatch] = useReducer(socketReducer, initialState);
+
   return (
-    <SocketContext.Provider value={{ socket }}>
+    <SocketContext.Provider value={{ ...state, dispatch }}>
       {children}
     </SocketContext.Provider>
   );
