@@ -6,6 +6,7 @@ export default function Login({ setActiveGame }) {
   const [username, setUsername] = useState("");
   const [activeOption, setActiveOption] = useState("");
   const [gameCode, setGameCode] = useState("");
+  const [alert, setAlert] = useState("");
 
   const { socket, dispatch } = useContext(SocketContext);
 
@@ -15,6 +16,8 @@ export default function Login({ setActiveGame }) {
     }
 
     socket.on("gameCode", (code) => setGameCode(code));
+    socket.on("alert", (msg) => setAlert(msg));
+    socket.on("joinedGame", () => setActiveGame(true));
   }, [socket]);
 
   const createNewGame = () => {
@@ -22,10 +25,9 @@ export default function Login({ setActiveGame }) {
       return;
     }
     dispatch({ type: "SET_USERNAME", payload: username });
+    setActiveOption("CreateGame");
 
     socket.emit("createNewGame");
-
-    setActiveOption("CreateGame");
   };
 
   const joinGame = () => {
@@ -35,7 +37,17 @@ export default function Login({ setActiveGame }) {
     setGameCode("");
 
     dispatch({ type: "SET_USERNAME", payload: username });
+    socket.emit("disconnectFromGame");
     setActiveOption("JoinGame");
+  };
+
+  const joinExistingGame = () => {
+    socket.emit("joinGame", gameCode);
+  };
+
+  const handleCopy = (e) => {
+    navigator.clipboard.writeText(gameCode);
+    e.target.style.borderColor = "green";
   };
 
   return (
@@ -69,7 +81,7 @@ export default function Login({ setActiveGame }) {
             <div>
               <label>Send this code to your opponent!</label>
               <input type="text" value={gameCode} readOnly />
-              <button>Copy!</button>
+              <button onClick={handleCopy}>Copy!</button>
             </div>
 
             <p>Waiting for your opponent to join...</p>
@@ -89,8 +101,9 @@ export default function Login({ setActiveGame }) {
                 value={gameCode}
                 onChange={(e) => setGameCode(e.target.value)}
               />
-              <button>Join!</button>
+              <button onClick={joinExistingGame}>Join!</button>
             </div>
+            {alert && <div>{alert}</div>}
             <div>
               <p>or</p>
               <button onClick={createNewGame}>Create a new game!</button>

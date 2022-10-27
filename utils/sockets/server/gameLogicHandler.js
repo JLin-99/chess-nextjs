@@ -10,6 +10,8 @@ export default (io, socket) => {
       if (!gamesInSession[socket.gameId].users.length) {
         delete gamesInSession[socket.gameId];
       }
+
+      socket.gameId = null;
     }
   };
 
@@ -34,6 +36,34 @@ export default (io, socket) => {
     console.log("Games in session: ", gamesInSession);
   };
 
+  const joinGame = (gameId) => {
+    if (!gamesInSession[gameId]) {
+      io.to(socket.id).emit("alert", "Wrong game ID, try again");
+      return;
+    }
+
+    if (socket.gameId) {
+      console.log("Already in " + socket.gameId + " game");
+      io.to(socket.id).emit("alert", "Already in " + socket.gameId + " game");
+      return;
+    }
+
+    if (gamesInSession[gameId].users.indexOf(socket.id) != -1) {
+      console.log("Already in this game session");
+      io.to(socket.id).emit("alert", "Already in this game session");
+      return;
+    }
+
+    gamesInSession[gameId].users.push(socket.id);
+    socket.gameId = gameId;
+
+    socket.join(gameId);
+    io.to(gameId).emit("joinedGame");
+    console.log("games in session", gamesInSession);
+  };
+
   socket.on("disconnect", disconnectFromGame);
+  socket.on("disconnectFromGame", disconnectFromGame);
   socket.on("createNewGame", createNewGame);
+  socket.on("joinGame", joinGame);
 };
