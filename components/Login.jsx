@@ -1,23 +1,34 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import SocketContext from "../context/socket/SocketContext";
 import styles from "../styles/Login.module.css";
 
 export default function Login({ setActiveGame }) {
   const [username, setUsername] = useState("");
   const [activeOption, setActiveOption] = useState("");
+  const [gameCode, setGameCode] = useState("123");
 
-  const { dispatch } = useContext(SocketContext);
+  const { socket, dispatch } = useContext(SocketContext);
 
-  const createNewGame = (e) => {
-    if (!username) {
+  useEffect(() => {
+    if (!socket) {
       return;
     }
 
+    socket.on("gameCode", (code) => setGameCode(code));
+  }, [socket]);
+
+  const createNewGame = () => {
+    if (!username) {
+      return;
+    }
     dispatch({ type: "SET_USERNAME", payload: username });
+
+    socket.emit("createNewGame");
+
     setActiveOption("CreateGame");
   };
 
-  const joinGame = (e) => {
+  const joinGame = () => {
     if (!username) {
       return;
     }
@@ -56,7 +67,7 @@ export default function Login({ setActiveGame }) {
           <>
             <div>
               <label>Send this code to your opponent!</label>
-              <input type="text" value="19823748971" />
+              <input type="text" value={gameCode} />
               <button>Copy!</button>
             </div>
 
