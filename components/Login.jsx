@@ -5,7 +5,7 @@ import styles from "../styles/Login.module.css";
 export default function Login({ setActiveGame }) {
   const [username, setUsername] = useState("");
   const [activeOption, setActiveOption] = useState("");
-  const [gameCode, setGameCode] = useState("123");
+  const [gameCode, setGameCode] = useState("");
 
   const { socket, dispatch } = useContext(SocketContext);
 
@@ -32,6 +32,7 @@ export default function Login({ setActiveGame }) {
     if (!username) {
       return;
     }
+    setGameCode("");
 
     dispatch({ type: "SET_USERNAME", payload: username });
     setActiveOption("JoinGame");
@@ -67,12 +68,15 @@ export default function Login({ setActiveGame }) {
           <>
             <div>
               <label>Send this code to your opponent!</label>
-              <input type="text" value={gameCode} />
+              <input type="text" value={gameCode} readOnly />
               <button>Copy!</button>
             </div>
 
             <p>Waiting for your opponent to join...</p>
-            <button onClick={() => setActiveGame(true)}>start!</button>
+            <div>
+              <p>or</p>
+              <button onClick={joinGame}>Join another Game!</button>
+            </div>
           </>
         )}
 
@@ -80,7 +84,11 @@ export default function Login({ setActiveGame }) {
           <>
             <div>
               <label>Paste code here!</label>
-              <input type="text" value="" />
+              <input
+                type="text"
+                value={gameCode}
+                onChange={(e) => setGameCode(e.target.value)}
+              />
               <button>Join!</button>
             </div>
             <div>

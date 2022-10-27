@@ -2,7 +2,7 @@ import { Chess } from "chess.js";
 const gamesInSession = {};
 
 export default (io, socket) => {
-  const onDisconnect = () => {
+  const disconnectFromGame = () => {
     if (socket.gameId) {
       const index = gamesInSession[socket.gameId].users.indexOf(socket.id);
       gamesInSession[socket.gameId].users.splice(index, 1);
@@ -14,6 +14,11 @@ export default (io, socket) => {
   };
 
   const createNewGame = () => {
+    // One game per socket
+    if (socket.gameId) {
+      disconnectFromGame();
+    }
+
     let gameId =
       socket.id.substring(0, 5) + ("" + Date.now()).slice(-5) + "-GAME";
     socket.gameId = gameId;
@@ -23,10 +28,12 @@ export default (io, socket) => {
       users: [socket.id],
     };
 
+    socket.join(gameId);
     io.to(socket.id).emit("gameCode", gameId);
-    console.log("Game in session: ", gamesInSession);
+
+    console.log("Games in session: ", gamesInSession);
   };
 
-  socket.on("disconnect", onDisconnect);
+  socket.on("disconnect", disconnectFromGame);
   socket.on("createNewGame", createNewGame);
 };

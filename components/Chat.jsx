@@ -52,7 +52,7 @@ export default function Chat() {
         })}
       </ul>
       <form className={styles.chatForm}>
-        <input id="input" autocomplete="off" />
+        <input id="input" autoComplete="off" />
         <button
           onClick={(e) => {
             e.preventDefault();
