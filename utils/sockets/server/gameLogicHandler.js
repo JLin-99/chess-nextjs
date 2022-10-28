@@ -54,6 +54,12 @@ export default (io, socket) => {
       return;
     }
 
+    if (gamesInSession[gameId].users.length >= 2) {
+      console.log("Full lobby");
+      io.to(socket.id).emit("alert", "Full Lobby");
+      return;
+    }
+
     gamesInSession[gameId].users.push(socket.id);
     socket.gameId = gameId;
 
