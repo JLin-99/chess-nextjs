@@ -27,11 +27,12 @@ export default (io, socket) => {
 
     gamesInSession[gameId] = {
       game: new Chess(),
-      users: [socket.id],
+      users: [{ user: socket.id, color: "w" }],
     };
 
     socket.join(gameId);
     io.to(socket.id).emit("gameCode", gameId);
+    io.to(socket.id).emit("playerColor", "w");
 
     console.log("Games in session: ", gamesInSession);
   };
@@ -55,12 +56,13 @@ export default (io, socket) => {
     }
 
     if (gamesInSession[gameId].users.length >= 2) {
-      console.log("Full lobby");
+      console.log("Full Lobby");
       io.to(socket.id).emit("alert", "Full Lobby");
       return;
     }
 
-    gamesInSession[gameId].users.push(socket.id);
+    gamesInSession[gameId].users.push({ user: socket.id, color: "b" });
+    io.to(socket.id).emit("playerColor", "b");
     socket.gameId = gameId;
 
     socket.join(gameId);
@@ -68,8 +70,19 @@ export default (io, socket) => {
     console.log("games in session", gamesInSession);
   };
 
+  const makeMove = (move) => {
+    console.log("hola");
+    const chess = gamesInSession[socket.gameId].game;
+
+    chess.move(move);
+    console.log(chess.ascii());
+    io.to(socket.gameId).emit("updateLocalGame", chess.fen());
+  };
+
   socket.on("disconnect", disconnectFromGame);
   socket.on("disconnectFromGame", disconnectFromGame);
   socket.on("createNewGame", createNewGame);
   socket.on("joinGame", joinGame);
+
+  socket.on("move", makeMove);
 };

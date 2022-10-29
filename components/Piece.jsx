@@ -8,11 +8,14 @@ import {
 import styles from "../styles/Chessboard.module.css";
 
 export default function Piece({ piece }) {
-  const { dispatch } = useContext(ChessboardContext);
+  const { chess, dispatch } = useContext(ChessboardContext);
 
   const handleMouseDown = (e) => {
     const pieceNode = e.target;
-    const validMovesNodes = getValidMovesNodes(pieceNode.parentElement.id);
+    const validMovesNodes = getValidMovesNodes(
+      pieceNode.parentElement.id,
+      chess
+    );
 
     if (validMovesNodes.length !== 0) {
       pieceNode.parentElement.classList.toggle(styles.activeSquare);

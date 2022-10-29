@@ -9,6 +9,8 @@ export const ChessboardProvider = ({ children }) => {
     activePiece: null,
     activeSquare: null,
     possibleMoves: [],
+    playerColor: "",
+    chess: null,
   };
 
   const [state, dispatch] = useReducer(chessboardReducer, initialState);

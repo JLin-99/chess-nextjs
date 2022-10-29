@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react";
 import ChessboardContext from "../context/chessboard/ChessboardContext";
 import {
   dropPiece,
+  getInitialGame,
   getSquares,
   dragPiece,
   clearValidMovesClasses,
@@ -12,16 +13,32 @@ import Square from "./Square";
 import SocketContext from "../context/socket/SocketContext";
 
 export default function Chessboard() {
-  const { squares, activePiece, activeSquare, possibleMoves, dispatch } =
+  const { squares, activePiece, activeSquare, possibleMoves, chess, dispatch } =
     useContext(ChessboardContext);
   const { socket } = useContext(SocketContext);
 
   useEffect(() => {
-    dispatch({ type: "INITIALIZE_SQUARES", payload: getSquares() });
+    const game = getInitialGame();
+    dispatch({ type: "INITIALIZE_GAME", payload: game });
+
+    dispatch({ type: "INITIALIZE_SQUARES", payload: getSquares(game) });
+
+    socket.on("playerColor", (color) => {
+      dispatch({ type: "SET_PLAYER_COLOR", payload: color });
+    });
+
+    socket.on("updateLocalGame", (fen) => {
+      game.load(fen);
+
+      dispatch({ type: "UPDATE_LOCAL_GAME", payload: game });
+      dispatch({
+        type: "UPDATE_SQUARES",
+        payload: getSquares(game),
+      });
+    });
   }, []);
 
   const handlePieceDrop = (e) => {
-    console.log(socket);
     if (!activePiece) return;
 
     let ladingTarget = e.target;
@@ -35,6 +52,10 @@ export default function Chessboard() {
 
       if (possibleMoves.includes(ladingTarget)) {
         const res = makeMove(move);
+
+        // Move it locally first and then send it to server
+        chess.move(move);
+        socket.emit("move", move);
         if (!res && possibleMoves) {
           let promotionPiece = "q";
           makeMove({ ...move, promotion: promotionPiece });
@@ -42,7 +63,7 @@ export default function Chessboard() {
 
         dispatch({
           type: "UPDATE_SQUARES",
-          payload: getSquares(),
+          payload: getSquares(chess),
         });
       }
     }

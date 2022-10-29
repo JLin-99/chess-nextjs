@@ -2,9 +2,10 @@ import { Chess } from "chess.js";
 import pieces from "../piecesPath.js";
 import styles from "../../styles/Chessboard.module.css";
 
-const chess = new Chess();
+const localChess = new Chess();
+export const getInitialGame = () => new Chess();
 
-export const getSquares = () => {
+export const getSquares = (chess) => {
   const board = chess.board();
   const squares = [];
   const columns = "abcdefgh".split("");
@@ -32,36 +33,18 @@ export const getSquares = () => {
   return squares;
 };
 
-// export const mapSquares = (squares, move, promotionPiece = "") => {
-//   let piece = squares.find((sqr) => sqr.coord === move.from).piece;
-//   if (promotionPiece) {
-//     piece.type = promotionPiece;
-//     piece.img = pieces[piece.color + piece.type.toUpperCase()].src;
-//   }
-
-//   return squares.map((sqr) => {
-//     if (sqr.piece === piece) {
-//       sqr.piece = null;
-//     }
-//     if (sqr.coord === move.to) {
-//       sqr.piece = piece;
-//     }
-//     return sqr;
-//   });
-// };
-
 export const makeMove = (move) => {
-  const a = chess.move(move);
-  console.log(a);
-  console.log(chess.ascii());
+  const a = localChess.move(move);
+  console.log(localChess.ascii());
+  console.log(localChess);
   return a;
 };
 
 export const validMoves = (move) => {
-  return chess.moves({ square: move, verbose: true });
+  return localChess.moves({ square: move, verbose: true });
 };
 
-export const getValidMovesNodes = (coord) => {
+export const getValidMovesNodes = (coord, chess) => {
   const moves = chess.moves({ square: coord, verbose: true });
 
   const validMovesNodes = moves.map((move) => {
