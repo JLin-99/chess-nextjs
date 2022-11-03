@@ -33,8 +33,6 @@ export default (io, socket) => {
     socket.join(gameId);
     io.to(socket.id).emit("gameCode", gameId);
     io.to(socket.id).emit("playerColor", "w");
-
-    console.log("Games in session: ", gamesInSession);
   };
 
   const joinGame = (gameId) => {
@@ -43,26 +41,28 @@ export default (io, socket) => {
       return;
     }
 
+    const users = gamesInSession[gameId].users;
+
     if (socket.gameId) {
       console.log("Already in " + socket.gameId + " game");
       io.to(socket.id).emit("alert", "Already in " + socket.gameId + " game");
       return;
     }
 
-    if (gamesInSession[gameId].users.indexOf(socket.id) != -1) {
-      console.log("Already in this game session");
-      io.to(socket.id).emit("alert", "Already in this game session");
-      return;
-    }
-
-    if (gamesInSession[gameId].users.length >= 2) {
+    if (users.length >= 2) {
       console.log("Full Lobby");
       io.to(socket.id).emit("alert", "Full Lobby");
       return;
     }
 
-    gamesInSession[gameId].users.push({ user: socket.id, color: "b" });
-    io.to(socket.id).emit("playerColor", "b");
+    users.length && users[0].color === "w"
+      ? users.push({ user: socket.id, color: "b" })
+      : users.push({ user: socket.id, color: "w" });
+
+    io.to(socket.id).emit(
+      "playerColor",
+      users[users.map((user) => user.user).indexOf(socket.id)].color
+    );
     socket.gameId = gameId;
 
     socket.join(gameId);
@@ -71,7 +71,6 @@ export default (io, socket) => {
   };
 
   const makeMove = (move) => {
-    console.log("hola");
     const chess = gamesInSession[socket.gameId].game;
 
     chess.move(move);
