@@ -40,8 +40,8 @@ export const makeMove = (move) => {
   return a;
 };
 
-export const validMoves = (move) => {
-  return localChess.moves({ square: move, verbose: true });
+export const validMoves = (move, chess) => {
+  return chess.moves({ square: move, verbose: true });
 };
 
 export const getValidMovesNodes = (coord, chess) => {

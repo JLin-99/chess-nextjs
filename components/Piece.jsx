@@ -11,6 +11,10 @@ export default function Piece({ piece }) {
   const { chess, playerColor, dispatch } = useContext(ChessboardContext);
 
   const handleMouseDown = (e) => {
+    if (chess._turn !== playerColor) {
+      return;
+    }
+
     const pieceNode = e.target;
     const validMovesNodes = getValidMovesNodes(
       pieceNode.parentElement.id,
@@ -33,7 +37,10 @@ export default function Piece({ piece }) {
 
   const handleMouseEnter = (e) => {
     const pieceNode = e.target;
-    if (validMoves(pieceNode.parentElement.id).length) {
+    if (
+      chess._turn === playerColor &&
+      validMoves(pieceNode.parentElement.id, chess).length
+    ) {
       pieceNode.classList.add(styles.canGrab);
     } else {
       pieceNode.classList.remove(styles.canGrab);
