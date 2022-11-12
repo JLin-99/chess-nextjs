@@ -13,18 +13,42 @@ import Square from "./Square";
 import SocketContext from "../context/socket/SocketContext";
 
 export default function Chessboard() {
-  const { squares, activePiece, activeSquare, possibleMoves, chess, dispatch } =
-    useContext(ChessboardContext);
+  const {
+    squares,
+    activePiece,
+    activeSquare,
+    possibleMoves,
+    chess,
+    playerColor,
+    dispatch,
+  } = useContext(ChessboardContext);
   const { socket } = useContext(SocketContext);
 
   useEffect(() => {
     const game = getInitialGame();
+    let socketColor;
+
     dispatch({ type: "INITIALIZE_GAME", payload: game });
 
-    dispatch({ type: "INITIALIZE_SQUARES", payload: getSquares(game) });
+    dispatch({
+      type: "INITIALIZE_SQUARES",
+      payload: getSquares(game, "w"),
+    });
 
     socket.on("playerColor", (color) => {
       dispatch({ type: "SET_PLAYER_COLOR", payload: color });
+      dispatch({
+        type: "UPDATE_SQUARES",
+        payload: getSquares(game, color),
+      });
+      socketColor = color;
+    });
+
+    socket.on("joinedGame", () => {
+      dispatch({
+        type: "UPDATE_SQUARES",
+        payload: getSquares(game, socketColor),
+      });
     });
 
     socket.on("updateLocalGame", (fen) => {
@@ -33,7 +57,7 @@ export default function Chessboard() {
       dispatch({ type: "UPDATE_LOCAL_GAME", payload: game });
       dispatch({
         type: "UPDATE_SQUARES",
-        payload: getSquares(game),
+        payload: getSquares(game, socketColor),
       });
     });
   }, []);
@@ -51,10 +75,10 @@ export default function Chessboard() {
       const move = { from: activeSquare.id, to: ladingTarget.id };
 
       if (possibleMoves.includes(ladingTarget)) {
-        const res = makeMove(move);
+        // const res = makeMove(move);
 
         // Move it locally first and then send it to server
-        chess.move(move);
+        const res = chess.move(move);
         socket.emit("move", move);
         if (!res && possibleMoves) {
           let promotionPiece = "q";
@@ -63,7 +87,7 @@ export default function Chessboard() {
 
         dispatch({
           type: "UPDATE_SQUARES",
-          payload: getSquares(chess),
+          payload: getSquares(chess, playerColor),
         });
       }
     }

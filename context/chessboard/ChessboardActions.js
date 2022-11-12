@@ -5,15 +5,23 @@ import styles from "../../styles/Chessboard.module.css";
 const localChess = new Chess();
 export const getInitialGame = () => new Chess();
 
-export const getSquares = (chess) => {
-  const board = chess.board();
+export const getSquares = (chess, playerColor) => {
   const squares = [];
-  const columns = "abcdefgh".split("");
+  let board = chess.board();
+  let rows = [...Array(8).keys()];
+  let columns = "abcdefgh".split("");
+
+  if (playerColor === "b") {
+    rows.reverse();
+    columns.reverse();
+    board.reverse();
+    board.forEach((row) => row.reverse());
+  }
 
   board.forEach((row, rowIndex) => {
     row.forEach((piece, columnIndex) => {
       const square = {
-        coord: columns[columnIndex] + (8 - rowIndex),
+        coord: columns[columnIndex] + (8 - rows[rowIndex]),
         color: (rowIndex % 2) - (columnIndex % 2) ? "b" : "w",
         piece: null,
       };
@@ -29,7 +37,7 @@ export const getSquares = (chess) => {
       squares.push(square);
     });
   });
-  console.log(squares);
+
   return squares;
 };
 
