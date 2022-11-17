@@ -88,3 +88,8 @@
   box-shadow: 0 0 1rem 0.1rem rgb(238, 81, 81);
   z-index: 1;
 }
+
+.check {
+  box-shadow: 0 0 1rem 0.1rem rgb(238, 81, 81);
+  z-index: 1;
+}

@@ -91,3 +91,17 @@ export const dropPiece = (pieceNode) => {
   pieceNode.style.left = "0px";
   pieceNode.style.top = "0px";
 };
+
+export const addCheckStyle = (king) => {
+  const square = document.getElementById(king).parentElement;
+
+  square.classList.add(styles.check);
+};
+
+export const clearCheckStyle = () => {
+  const bkSquare = document.getElementById("bk").parentElement;
+  const wkSquare = document.getElementById("wk").parentElement;
+
+  bkSquare.classList.remove(styles.check);
+  wkSquare.classList.remove(styles.check);
+};

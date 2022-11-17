@@ -7,6 +7,8 @@ import {
   dragPiece,
   clearValidMovesClasses,
   makeMove,
+  addCheckStyle,
+  clearCheckStyle,
 } from "../context/chessboard/ChessboardActions";
 import styles from "../styles/Chessboard.module.css";
 import Square from "./Square";
@@ -60,6 +62,15 @@ export default function Chessboard() {
         payload: getSquares(game, socketColor),
       });
     });
+
+    socket.on("inCheck", (king) => {
+      addCheckStyle(king);
+    });
+
+    socket.on("notInCheck", () => {
+      console.log("notCheck");
+      clearCheckStyle();
+    });
   }, []);
 
   const handlePieceDrop = (e) => {
@@ -75,11 +86,11 @@ export default function Chessboard() {
       const move = { from: activeSquare.id, to: ladingTarget.id };
 
       if (possibleMoves.includes(ladingTarget)) {
-        // const res = makeMove(move);
-
         // Move it locally first and then send it to server
         const res = chess.move(move);
         socket.emit("move", move);
+
+        // Pawn promotion
         if (!res && possibleMoves) {
           let promotionPiece = "q";
           makeMove({ ...move, promotion: promotionPiece });
@@ -93,6 +104,13 @@ export default function Chessboard() {
     }
 
     leavePiece();
+
+    // if (chess.inCheck()) {
+    //   console.log("jque");
+    //   checkStyle(chess._turn + "k");
+    // } else {
+    //   clearCheckStyle();
+    // }
   };
 
   const leavePiece = () => {

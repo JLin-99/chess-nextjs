@@ -53,6 +53,7 @@ export default function Piece({ piece }) {
         backgroundImage: `url(${piece.img})`,
       }}
       className={styles.piece}
+      {...(piece.type === "k" ? { id: piece.color + piece.type } : {})}
       onMouseDown={handleMouseDown}
       onMouseEnter={handleMouseEnter}
     ></div>

@@ -75,7 +75,14 @@ export default (io, socket) => {
 
     chess.move(move);
     console.log(chess.ascii());
+
     io.to(socket.gameId).emit("updateLocalGame", chess.fen());
+
+    if (chess.inCheck()) {
+      io.to(socket.gameId).emit("inCheck", chess._turn + "k");
+    } else {
+      io.to(socket.gameId).emit("notInCheck");
+    }
   };
 
   socket.on("disconnect", disconnectFromGame);
