@@ -26,8 +26,8 @@ export default (io, socket) => {
     socket.gameId = gameId;
 
     gamesInSession[gameId] = {
-      game: new Chess(),
-      users: [{ user: socket.id, color: "w" }],
+      chess: new Chess(),
+      users: [createUser(socket.id, "w")],
     };
 
     socket.join(gameId);
@@ -56,25 +56,47 @@ export default (io, socket) => {
     }
 
     users.length && users[0].color === "w"
-      ? users.push({ user: socket.id, color: "b" })
-      : users.push({ user: socket.id, color: "w" });
+      ? users.push(createUser(socket.id, "b"))
+      : users.push(createUser(socket.id, "w"));
 
     io.to(socket.id).emit(
       "playerColor",
       users[users.map((user) => user.user).indexOf(socket.id)].color
     );
+
     socket.gameId = gameId;
+    gamesInSession[socket.gameId].timer = {
+      lastTimestamp: new Date().getTime(),
+      w: 600,
+      b: 600,
+      turn: gamesInSession[socket.gameId].chess._turn,
+    };
 
     socket.join(gameId);
     io.to(gameId).emit("joinedGame");
+    io.to(gameId).emit("timeLeft", gamesInSession[socket.gameId].timer);
     console.log("games in session", gamesInSession);
   };
 
   const makeMove = (move) => {
-    const chess = gamesInSession[socket.gameId].game;
+    const chess = gamesInSession[socket.gameId].chess;
 
     chess.move(move);
     console.log(chess.ascii());
+    updateTimer(gamesInSession[socket.gameId]);
+    io.to(socket.gameId).emit("timeLeft", gamesInSession[socket.gameId].timer);
+    if (
+      !gamesInSession[socket.gameId].timer.w ||
+      !gamesInSession[socket.gameId].timer.b
+    ) {
+      if (chess.insufficientMaterial()) {
+        io.to(socket.gameId).emit("gameOver", { result: "tie" });
+      } else {
+        io.to(socket.gameId).emit("gameOver", {
+          result: !gamesInSession[socket.gameId].timer.w ? "b" : "w",
+        });
+      }
+    }
 
     io.to(socket.gameId).emit("updateLocalGame", chess.fen());
 
@@ -92,3 +114,18 @@ export default (io, socket) => {
 
   socket.on("move", makeMove);
 };
+
+function createUser(id, color) {
+  return { user: id, color, timeLeft: 600 };
+}
+
+function updateTimer(game) {
+  const time = new Date().getTime();
+  const timer = game.timer;
+  const totalTimeUsed = (time - timer.lastTimestamp) / 1000;
+  const timeLeft = timer[timer.turn] - totalTimeUsed;
+
+  timer.lastTimestamp = time;
+  timer[timer.turn] = timeLeft >= 0 ? timeLeft : 0;
+  timer.turn = game.chess._turn;
+}

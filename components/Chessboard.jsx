@@ -93,7 +93,6 @@ export default function Chessboard() {
       if (possibleMoves.includes(landingTarget)) {
         // Move it locally first and then send it to server
         const res = chess.move(move);
-        socket.emit("move", move);
 
         // Pawn promotion
         if (!res && possibleMoves) {
@@ -106,6 +105,8 @@ export default function Chessboard() {
             landingTarget.appendChild(activePiece.coneNode(true));
           }
           activePiece.style.display = "none";
+        } else {
+          socket.emit("move", move);
         }
 
         dispatch({

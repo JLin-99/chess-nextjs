@@ -8,7 +8,7 @@ export default function Login({ setIsPromotion, move }) {
   const { socket } = useContext(SocketContext);
 
   const handleClick = (piece) => {
-    let a = chess.move({ ...move, promotion: piece });
+    chess.move({ ...move, promotion: piece });
     socket.emit("move", { ...move, promotion: piece });
     setIsPromotion(false);
   };
