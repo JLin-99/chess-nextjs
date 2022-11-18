@@ -40,16 +40,11 @@
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-  /* z-index: -1; */
 }
 
 .piece:active {
   z-index: 5000;
   pointer-events: none;
-}
-
-.activeSquare {
-  background-color: #B7C4CF;
 }
 
 .possibleMove {
@@ -92,4 +87,10 @@
 .check {
   box-shadow: 0 0 1rem 0.1rem rgb(238, 81, 81);
   z-index: 1;
+}
+
+.activeSquare {
+  background-color: #B7C4CF;
+  position: relative;
+  z-index: 5;
 }

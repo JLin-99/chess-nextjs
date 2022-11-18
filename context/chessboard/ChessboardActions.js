@@ -77,6 +77,7 @@ export const clearValidMovesClasses = (squareNodes) => {
     square.classList.remove(styles.possibleMove);
     square.classList.remove(styles.specialMove);
     square.classList.remove(styles.captureMove);
+    square.classList.remove(styles.promotionMove);
   });
 };
 
@@ -84,24 +85,26 @@ export const dragPiece = (e, pieceNode = e.target) => {
   pieceNode.style.position = "fixed";
   pieceNode.style.left = e.clientX - pieceNode.offsetWidth / 2 + "px";
   pieceNode.style.top = e.clientY - pieceNode.offsetHeight / 2 + "px";
+  pieceNode.style.zIndex = 500;
 };
 
 export const dropPiece = (pieceNode) => {
   pieceNode.style.position = "absolute";
   pieceNode.style.left = "0px";
   pieceNode.style.top = "0px";
+  pieceNode.style.zIndex = 0;
 };
 
 export const addCheckStyle = (king) => {
   const square = document.getElementById(king).parentElement;
 
   square.classList.add(styles.check);
+  return square.id;
 };
 
-export const clearCheckStyle = () => {
-  const bkSquare = document.getElementById("bk").parentElement;
-  const wkSquare = document.getElementById("wk").parentElement;
+export const clearCheckStyle = (coord) => {
+  if (!coord) return;
+  const kingSquare = document.getElementById(coord);
 
-  bkSquare.classList.remove(styles.check);
-  wkSquare.classList.remove(styles.check);
+  kingSquare.classList.remove(styles.check);
 };

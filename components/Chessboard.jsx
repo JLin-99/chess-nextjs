@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import ChessboardContext from "../context/chessboard/ChessboardContext";
 import {
   dropPiece,
@@ -12,6 +12,7 @@ import {
 } from "../context/chessboard/ChessboardActions";
 import styles from "../styles/Chessboard.module.css";
 import Square from "./Square";
+import Promotion from "./Promotion";
 import SocketContext from "../context/socket/SocketContext";
 
 export default function Chessboard() {
@@ -25,10 +26,13 @@ export default function Chessboard() {
     dispatch,
   } = useContext(ChessboardContext);
   const { socket } = useContext(SocketContext);
+  const [isPromotion, setIsPromotion] = useState(false);
+  const [promotionMove, setPromotionMove] = useState(null);
 
   useEffect(() => {
     const game = getInitialGame();
     let socketColor;
+    let checkSquareCoord = "";
 
     dispatch({ type: "INITIALIZE_GAME", payload: game });
 
@@ -64,36 +68,44 @@ export default function Chessboard() {
     });
 
     socket.on("inCheck", (king) => {
-      addCheckStyle(king);
+      checkSquareCoord = addCheckStyle(king);
+      console.log("inCheck: ", checkSquareCoord);
     });
 
     socket.on("notInCheck", () => {
-      console.log("notCheck");
-      clearCheckStyle();
+      clearCheckStyle(checkSquareCoord);
+      console.log("notInCheck: ", checkSquareCoord);
     });
   }, []);
 
   const handlePieceDrop = (e) => {
     if (!activePiece) return;
 
-    let ladingTarget = e.target;
+    let landingTarget = e.target;
 
-    if (ladingTarget.classList.contains(styles.piece)) {
-      ladingTarget = ladingTarget.parentElement;
+    if (landingTarget.classList.contains(styles.piece)) {
+      landingTarget = landingTarget.parentElement;
     }
 
-    if (ladingTarget.classList.contains(styles.square)) {
-      const move = { from: activeSquare.id, to: ladingTarget.id };
+    if (landingTarget.classList.contains(styles.square)) {
+      const move = { from: activeSquare.id, to: landingTarget.id };
 
-      if (possibleMoves.includes(ladingTarget)) {
+      if (possibleMoves.includes(landingTarget)) {
         // Move it locally first and then send it to server
         const res = chess.move(move);
         socket.emit("move", move);
 
         // Pawn promotion
         if (!res && possibleMoves) {
-          let promotionPiece = "q";
-          makeMove({ ...move, promotion: promotionPiece });
+          setIsPromotion(true);
+          setPromotionMove(move);
+          if (landingTarget.lastChild.classList.contains(styles.piece)) {
+            landingTarget.lastChild.style.backgroundImage =
+              activePiece.style.backgroundImage;
+          } else {
+            landingTarget.appendChild(activePiece.coneNode(true));
+          }
+          activePiece.style.display = "none";
         }
 
         dispatch({
@@ -104,13 +116,6 @@ export default function Chessboard() {
     }
 
     leavePiece();
-
-    // if (chess.inCheck()) {
-    //   console.log("jque");
-    //   checkStyle(chess._turn + "k");
-    // } else {
-    //   clearCheckStyle();
-    // }
   };
 
   const leavePiece = () => {
@@ -128,17 +133,22 @@ export default function Chessboard() {
   };
 
   return (
-    <div
-      className={styles.chessboard}
-      onMouseMove={(e) => {
-        activePiece && dragPiece(e, activePiece);
-      }}
-      onMouseUp={handlePieceDrop}
-      onMouseLeave={leavePiece}
-    >
-      {squares.map((sqr) => (
-        <Square key={sqr.coord} sqr={sqr} />
-      ))}
-    </div>
+    <>
+      {isPromotion && (
+        <Promotion setIsPromotion={setIsPromotion} move={promotionMove} />
+      )}
+      <div
+        className={styles.chessboard}
+        onMouseMove={(e) => {
+          activePiece && dragPiece(e, activePiece);
+        }}
+        onMouseUp={handlePieceDrop}
+        onMouseLeave={leavePiece}
+      >
+        {squares.map((sqr) => (
+          <Square key={sqr.coord} sqr={sqr} />
+        ))}
+      </div>
+    </>
   );
 }
