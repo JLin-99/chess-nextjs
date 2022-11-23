@@ -13,4 +13,8 @@ export default (io, socket) => {
       `${socket.id.substring(0, 5)} is saying hello to everyone`
     );
   });
+
+  socket.on("sendChatMessage", (message) => {
+    io.to(socket.gameId).emit("chatMessage", message);
+  });
 };

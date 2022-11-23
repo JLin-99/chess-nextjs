@@ -1,9 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import SocketContext from "../context/socket/SocketContext";
 import styles from "../styles/Chat.module.css";
+import ChatMessage from "./ChatMessage";
 
 export default function Chat() {
   const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState("");
   const { socket, username } = useContext(SocketContext);
 
   useEffect(() => {
@@ -11,18 +13,8 @@ export default function Chat() {
       return;
     }
 
-    socket.on("privateMessage", (message) => {
-      setMessages((currentMsgs) => [
-        ...currentMsgs,
-        { author: socket.id, message: message },
-      ]);
-    });
-
-    socket.on("publicMessage", (message) => {
-      setMessages((currentMsgs) => [
-        ...currentMsgs,
-        { author: socket.id, message: message },
-      ]);
+    socket.on("chatMessage", (msg) => {
+      setMessages((currentMsgs) => [...currentMsgs, msg]);
     });
   }, [socket]);
 
@@ -30,38 +22,36 @@ export default function Chat() {
     if (username) socket.emit("setUsername", username);
   }, [username]);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (message === "") return;
+
+    socket.emit("sendChatMessage", {
+      author: username,
+      message,
+      type: "private",
+    });
+
+    setMessage("");
+  };
+
   return (
     <div className={styles.container}>
-      <h2>User: {username}</h2>
-      <h3>Server messages:</h3>
-      <button
-        onClick={(e) => {
-          e.preventDefault();
-          socket.emit("greetEveryone");
-        }}
-      >
-        Say Hello to Everyone
-      </button>
+      <h2>Chat with your friend</h2>
       <ul className={styles.messages}>
-        {messages.map((msg, i) => {
-          return (
-            <li key={i}>
-              {msg.author}: {msg.message}
-            </li>
-          );
-        })}
+        {messages.map((msg, i) => (
+          <ChatMessage key={i} message={msg} />
+        ))}
       </ul>
-      <form className={styles.chatForm}>
-        <input id="input" autoComplete="off" />
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            console.log("click");
-            socket.emit("privateMessage");
-          }}
-        >
-          Send
-        </button>
+      <form className={styles.chatForm} onSubmit={handleSubmit}>
+        <input
+          id="input"
+          type="text"
+          autoComplete="off"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+        />
+        <input type="submit" value="Send" />
       </form>
     </div>
   );
