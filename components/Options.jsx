@@ -5,9 +5,9 @@ import styles from "../styles/Options.module.css";
 
 export default function Options() {
   const { socket } = useContext(SocketContext);
-  const { playerColor } = useContext(ChessboardContext);
-  const [whitePlayerTime, setWhitePlayerTime] = useState(0);
-  const [blackPlayerTime, setBlackPlayerTime] = useState(0);
+  const { playerColor, gameOver } = useContext(ChessboardContext);
+  const [whitePlayerTime, setWhitePlayerTime] = useState(600);
+  const [blackPlayerTime, setBlackPlayerTime] = useState(600);
   const [turn, setTurn] = useState("");
 
   useEffect(() => {
@@ -22,61 +22,84 @@ export default function Options() {
     });
   }, [socket]);
 
+  // Chess Timer
   useEffect(() => {
     let interval = null;
 
-    if (turn) {
+    if (turn && !Object.keys(gameOver).length) {
       interval = setInterval(() => {
         turn === "w"
-          ? setWhitePlayerTime((prevTime) => (prevTime > 0 ? prevTime - 1 : 0))
-          : setBlackPlayerTime((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
-        turn === "b"
-          ? setBlackPlayerTime((prevTime) => (prevTime > 0 ? prevTime - 1 : 0))
-          : setWhitePlayerTime((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
+          ? setWhitePlayerTime((prevTime) => {
+              if (prevTime > 0) {
+                return prevTime - 1;
+              } else {
+                socket.emit("checkTimer");
+                return 0;
+              }
+            })
+          : setBlackPlayerTime((prevTime) => {
+              if (prevTime > 0) {
+                return prevTime - 1;
+              } else {
+                socket.emit("checkTimer");
+                return 0;
+              }
+            });
       }, 1000);
     } else {
       clearInterval(interval);
     }
 
     return () => clearInterval(interval);
-  }, [turn]);
+  }, [turn, gameOver]);
 
   return (
     <div className={styles.container}>
-      {playerColor === "b" ? (
-        <>
-          <h3>
-            WTimer:{" "}
-            {`${("0" + (Math.floor(whitePlayerTime / 60) % 60)).slice(-2)}:${(
-              "0" +
-              (whitePlayerTime % 60)
-            ).slice(-2)}`}
-          </h3>
-          <h3>
-            bTimer:{" "}
-            {`${("0" + (Math.floor(blackPlayerTime / 60) % 60)).slice(-2)}:${(
-              "0" +
-              (blackPlayerTime % 60)
-            ).slice(-2)}`}
-          </h3>
-        </>
+      {playerColor === "w" ? (
+        <h3>
+          bTimer:{" "}
+          {`${("0" + (Math.floor(blackPlayerTime / 60) % 60)).slice(-2)}:${(
+            "0" +
+            (blackPlayerTime % 60)
+          ).slice(-2)}`}
+        </h3>
       ) : (
-        <>
-          <h3>
-            bTimer:{" "}
-            {`${("0" + (Math.floor(blackPlayerTime / 60) % 60)).slice(-2)}:${(
-              "0" +
-              (blackPlayerTime % 60)
-            ).slice(-2)}`}
-          </h3>
-          <h3>
-            WTimer:{" "}
-            {`${("0" + (Math.floor(whitePlayerTime / 60) % 60)).slice(-2)}:${(
-              "0" +
-              (whitePlayerTime % 60)
-            ).slice(-2)}`}
-          </h3>
-        </>
+        <h3>
+          WTimer:{" "}
+          {`${("0" + (Math.floor(whitePlayerTime / 60) % 60)).slice(-2)}:${(
+            "0" +
+            (whitePlayerTime % 60)
+          ).slice(-2)}`}
+        </h3>
+      )}
+
+      {Object.keys(gameOver).length !== 0 && (
+        <div>
+          <h2>Game Over: {gameOver.type}</h2>
+          {gameOver.winner === "tie" ? (
+            <h2>Tie</h2>
+          ) : (
+            <h2>Winner: {gameOver.winner}</h2>
+          )}
+        </div>
+      )}
+
+      {playerColor === "w" ? (
+        <h3>
+          WTimer:{" "}
+          {`${("0" + (Math.floor(whitePlayerTime / 60) % 60)).slice(-2)}:${(
+            "0" +
+            (whitePlayerTime % 60)
+          ).slice(-2)}`}
+        </h3>
+      ) : (
+        <h3>
+          bTimer:{" "}
+          {`${("0" + (Math.floor(blackPlayerTime / 60) % 60)).slice(-2)}:${(
+            "0" +
+            (blackPlayerTime % 60)
+          ).slice(-2)}`}
+        </h3>
       )}
     </div>
   );

@@ -10,6 +10,7 @@ export const ChessboardProvider = ({ children }) => {
     activeSquare: null,
     possibleMoves: [],
     playerColor: "",
+    gameOver: {},
     chess: null,
   };
 

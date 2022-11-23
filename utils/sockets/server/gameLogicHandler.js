@@ -67,8 +67,8 @@ export default (io, socket) => {
     socket.gameId = gameId;
     gamesInSession[socket.gameId].timer = {
       lastTimestamp: new Date().getTime(),
-      w: 600,
-      b: 600,
+      w: 12,
+      b: 12,
       turn: gamesInSession[socket.gameId].chess._turn,
     };
 
@@ -83,20 +83,8 @@ export default (io, socket) => {
 
     chess.move(move);
     console.log(chess.ascii());
-    updateTimer(gamesInSession[socket.gameId]);
-    io.to(socket.gameId).emit("timeLeft", gamesInSession[socket.gameId].timer);
-    if (
-      !gamesInSession[socket.gameId].timer.w ||
-      !gamesInSession[socket.gameId].timer.b
-    ) {
-      if (chess.insufficientMaterial()) {
-        io.to(socket.gameId).emit("gameOver", { result: "tie" });
-      } else {
-        io.to(socket.gameId).emit("gameOver", {
-          result: !gamesInSession[socket.gameId].timer.w ? "b" : "w",
-        });
-      }
-    }
+
+    checkTimer();
 
     io.to(socket.gameId).emit("updateLocalGame", chess.fen());
 
@@ -107,10 +95,33 @@ export default (io, socket) => {
     }
   };
 
+  const checkTimer = () => {
+    const chess = gamesInSession[socket.gameId].chess;
+    const timer = gamesInSession[socket.gameId].timer;
+
+    updateTimer(timer, chess);
+    io.to(socket.gameId).emit("timeLeft", timer);
+
+    if (!timer.w || !timer.b) {
+      if (chess.isInsufficientMaterial()) {
+        io.to(socket.gameId).emit("gameOver", {
+          type: "timeOut",
+          winner: "tie",
+        });
+      } else {
+        io.to(socket.gameId).emit("gameOver", {
+          type: "timeOut",
+          winner: !timer.w ? "b" : "w",
+        });
+      }
+    }
+  };
+
   socket.on("disconnect", disconnectFromGame);
   socket.on("disconnectFromGame", disconnectFromGame);
   socket.on("createNewGame", createNewGame);
   socket.on("joinGame", joinGame);
+  socket.on("checkTimer", checkTimer);
 
   socket.on("move", makeMove);
 };
@@ -119,13 +130,12 @@ function createUser(id, color) {
   return { user: id, color, timeLeft: 600 };
 }
 
-function updateTimer(game) {
+function updateTimer(timer, chess) {
   const time = new Date().getTime();
-  const timer = game.timer;
   const totalTimeUsed = (time - timer.lastTimestamp) / 1000;
   const timeLeft = timer[timer.turn] - totalTimeUsed;
 
   timer.lastTimestamp = time;
   timer[timer.turn] = timeLeft >= 0 ? timeLeft : 0;
-  timer.turn = game.chess._turn;
+  timer.turn = chess._turn;
 }

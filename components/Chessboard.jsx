@@ -23,6 +23,7 @@ export default function Chessboard() {
     possibleMoves,
     chess,
     playerColor,
+    gameOver,
     dispatch,
   } = useContext(ChessboardContext);
   const { socket } = useContext(SocketContext);
@@ -69,12 +70,14 @@ export default function Chessboard() {
 
     socket.on("inCheck", (king) => {
       checkSquareCoord = addCheckStyle(king);
-      console.log("inCheck: ", checkSquareCoord);
     });
 
     socket.on("notInCheck", () => {
       clearCheckStyle(checkSquareCoord);
-      console.log("notInCheck: ", checkSquareCoord);
+    });
+
+    socket.on("gameOver", (gameOverStatus) => {
+      dispatch({ type: "SET_GAME_OVER", payload: gameOverStatus });
     });
   }, []);
 
@@ -90,7 +93,10 @@ export default function Chessboard() {
     if (landingTarget.classList.contains(styles.square)) {
       const move = { from: activeSquare.id, to: landingTarget.id };
 
-      if (possibleMoves.includes(landingTarget)) {
+      if (
+        possibleMoves.includes(landingTarget) &&
+        !Object.keys(gameOver).length
+      ) {
         // Move it locally first and then send it to server
         const res = chess.move(move);
 
