@@ -53,8 +53,10 @@ export default function Options() {
     return () => clearInterval(interval);
   }, [turn, gameOver]);
 
-  const playAgain = () => {
+  const playAgain = (e) => {
     socket.emit("playAgain");
+    e.target.textContent = "Waiting for the opponent...";
+    e.target.disabled = true;
   };
 
   return (

@@ -28,6 +28,7 @@ export default (io, socket) => {
     gamesInSession[gameId] = {
       chess: new Chess(),
       users: [createUser(socket.id, "w")],
+      playAgainConfirmations: 0,
     };
 
     socket.join(gameId);
@@ -90,6 +91,7 @@ export default (io, socket) => {
 
     if (chess.inCheck()) {
       io.to(socket.gameId).emit("inCheck", chess._turn + "k");
+      // TODO: Add messages context locally for adding chessInfo
       // io.to(socket.gameId).emit("chatMessage", {
       //   author: socket.gameId,
       //   message: `${
@@ -125,11 +127,38 @@ export default (io, socket) => {
     }
   };
 
+  const playAgain = () => {
+    const game = gamesInSession[socket.gameId];
+    game.playAgainConfirmations++;
+
+    if (game.playAgainConfirmations === 2) {
+      game.chess.reset();
+      game.timer = {
+        lastTimestamp: new Date().getTime(),
+        w: 600,
+        b: 600,
+        turn: gamesInSession[socket.gameId].chess._turn,
+      };
+      game.playAgainConfirmations = 0;
+
+      io.to(socket.gameId).emit("updateLocalGame", game.chess.fen());
+      io.to(socket.gameId).emit("timeLeft", game.timer);
+      io.to(socket.gameId).emit("gameOver", {});
+      io.to(socket.gameId).emit("notInCheck");
+      io.to(socket.gameId).emit("chatMessage", {
+        author: socket.gameId,
+        message: "New game started",
+        type: "chessInfo",
+      });
+    }
+  };
+
   socket.on("disconnect", disconnectFromGame);
   socket.on("disconnectFromGame", disconnectFromGame);
   socket.on("createNewGame", createNewGame);
   socket.on("joinGame", joinGame);
   socket.on("checkTimer", checkTimer);
+  socket.on("playAgain", playAgain);
 
   socket.on("move", makeMove);
 };
@@ -153,7 +182,7 @@ function getGameOverStatus(chess) {
   switch (true) {
     case chess.isCheckmate():
       gameOver.type = "Checkmate";
-      gameOver.winner = chess._turn;
+      gameOver.winner = chess._turn === "w" ? "b" : "w";
       break;
     case chess.isInsufficientMaterial():
       gameOver.type = "Insufficient Material";
