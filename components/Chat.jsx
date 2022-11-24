@@ -29,7 +29,7 @@ export default function Chat() {
     socket.emit("sendChatMessage", {
       author: username,
       message,
-      type: "private",
+      type: "userChat",
     });
 
     setMessage("");

@@ -67,8 +67,8 @@ export default (io, socket) => {
     socket.gameId = gameId;
     gamesInSession[socket.gameId].timer = {
       lastTimestamp: new Date().getTime(),
-      w: 12,
-      b: 12,
+      w: 600,
+      b: 600,
       turn: gamesInSession[socket.gameId].chess._turn,
     };
 
@@ -90,6 +90,13 @@ export default (io, socket) => {
 
     if (chess.inCheck()) {
       io.to(socket.gameId).emit("inCheck", chess._turn + "k");
+      io.to(socket.gameId).emit("chatMessage", {
+        author: socket.gameId,
+        message: `${
+          chess._turn === "b" ? "Black" : "White"
+        } player is in check`,
+        type: "chessInfo",
+      });
     } else {
       io.to(socket.gameId).emit("notInCheck");
     }
