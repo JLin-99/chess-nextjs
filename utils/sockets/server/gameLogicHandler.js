@@ -90,15 +90,19 @@ export default (io, socket) => {
 
     if (chess.inCheck()) {
       io.to(socket.gameId).emit("inCheck", chess._turn + "k");
-      io.to(socket.gameId).emit("chatMessage", {
-        author: socket.gameId,
-        message: `${
-          chess._turn === "b" ? "Black" : "White"
-        } player is in check`,
-        type: "chessInfo",
-      });
+      // io.to(socket.gameId).emit("chatMessage", {
+      //   author: socket.gameId,
+      //   message: `${
+      //     chess._turn === "b" ? "Black" : "White"
+      //   } player is in check`,
+      //   type: "chessInfo",
+      // });
     } else {
       io.to(socket.gameId).emit("notInCheck");
+    }
+
+    if (chess.isGameOver() || chess.isDraw() || chess.isStalemate()) {
+      io.to(socket.gameId).emit("gameOver", getGameOverStatus(chess));
     }
   };
 
@@ -110,17 +114,14 @@ export default (io, socket) => {
     io.to(socket.gameId).emit("timeLeft", timer);
 
     if (!timer.w || !timer.b) {
+      const gameOver = { type: "Time Out" };
       if (chess.isInsufficientMaterial()) {
-        io.to(socket.gameId).emit("gameOver", {
-          type: "timeOut",
-          winner: "tie",
-        });
+        gameOver.winner = "tie";
       } else {
-        io.to(socket.gameId).emit("gameOver", {
-          type: "timeOut",
-          winner: !timer.w ? "b" : "w",
-        });
+        gameOver.winner = !timer.w ? "b" : "w";
       }
+
+      io.to(socket.gameId).emit("gameOver", gameOver);
     }
   };
 
@@ -145,4 +146,26 @@ function updateTimer(timer, chess) {
   timer.lastTimestamp = time;
   timer[timer.turn] = timeLeft >= 0 ? timeLeft : 0;
   timer.turn = chess._turn;
+}
+
+function getGameOverStatus(chess) {
+  const gameOver = { winner: "tie" };
+  switch (true) {
+    case chess.isCheckmate():
+      gameOver.type = "Checkmate";
+      gameOver.winner = chess._turn;
+      break;
+    case chess.isInsufficientMaterial():
+      gameOver.type = "Insufficient Material";
+      break;
+    case chess.isDraw():
+      gameOver.type = "50-move rule";
+      break;
+    case chess.isStalemate():
+      gameOver.type = "Stalemate";
+      break;
+    default:
+      break;
+  }
+  return gameOver;
 }

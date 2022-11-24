@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import ChessboardContext from "../context/chessboard/ChessboardContext";
 import SocketContext from "../context/socket/SocketContext";
 import styles from "../styles/Chat.module.css";
 import ChatMessage from "./ChatMessage";
@@ -7,6 +8,7 @@ export default function Chat() {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const { socket, username } = useContext(SocketContext);
+  const { gameOver } = useContext(ChessboardContext);
 
   useEffect(() => {
     if (!socket) {
@@ -21,6 +23,24 @@ export default function Chat() {
   useEffect(() => {
     if (username) socket.emit("setUsername", username);
   }, [username]);
+
+  useEffect(() => {
+    if (Object.keys(gameOver).length) {
+      setMessages((currentMsgs) => [
+        ...currentMsgs,
+        {
+          type: "chessInfo",
+          message: `Game Over - ${gameOver.type} - ${
+            gameOver.winner === "tie"
+              ? "Tie"
+              : gameOver.winner === "w"
+              ? "White Player Wins"
+              : "Black Player Wins"
+          }`,
+        },
+      ]);
+    }
+  }, [gameOver]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

@@ -53,6 +53,10 @@ export default function Options() {
     return () => clearInterval(interval);
   }, [turn, gameOver]);
 
+  const playAgain = () => {
+    socket.emit("playAgain");
+  };
+
   return (
     <div className={styles.container}>
       {playerColor === "w" ? (
@@ -79,8 +83,10 @@ export default function Options() {
           {gameOver.winner === "tie" ? (
             <h2>Tie</h2>
           ) : (
+            // TODO: Add opponent username to context
             <h2>Winner: {gameOver.winner}</h2>
           )}
+          <button onClick={playAgain}>Play Again!</button>
         </div>
       )}
 

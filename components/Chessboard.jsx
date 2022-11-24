@@ -83,6 +83,7 @@ export default function Chessboard() {
 
   const handlePieceDrop = (e) => {
     if (!activePiece) return;
+    console.log(chess);
 
     let landingTarget = e.target;
 
