@@ -4,8 +4,9 @@ const gamesInSession = {};
 export default (io, socket) => {
   const disconnectFromGame = () => {
     if (socket.gameId) {
-      const index = gamesInSession[socket.gameId].users.indexOf(socket.id);
-      gamesInSession[socket.gameId].users.splice(index, 1);
+      const index = gamesInSession[socket.gameId].users
+        .map((user) => user.user)
+        .indexOf(socket.id);
 
       if (!gamesInSession[socket.gameId].users.length) {
         delete gamesInSession[socket.gameId];
@@ -29,6 +30,13 @@ export default (io, socket) => {
       chess: new Chess(),
       users: [createUser(socket.id, "w")],
       playAgainConfirmations: 0,
+    };
+
+    gamesInSession[socket.gameId].timer = {
+      lastTimestamp: new Date().getTime(),
+      w: 600,
+      b: 600,
+      turn: gamesInSession[socket.gameId].chess._turn,
     };
 
     socket.join(gameId);
@@ -56,6 +64,11 @@ export default (io, socket) => {
       return;
     }
 
+    console.log(
+      "users.map((user) => user.color)",
+      users.map((user) => user.color)
+    );
+
     users.length && users[0].color === "w"
       ? users.push(createUser(socket.id, "b"))
       : users.push(createUser(socket.id, "w"));
@@ -64,18 +77,22 @@ export default (io, socket) => {
       "playerColor",
       users[users.map((user) => user.user).indexOf(socket.id)].color
     );
+    console.log(
+      "users.map((user) => user.color)",
+      users.map((user) => user.color)
+    );
+    console.log("users[users.map((user) => user.user).indexOf(socket.id)]");
 
     socket.gameId = gameId;
-    gamesInSession[socket.gameId].timer = {
-      lastTimestamp: new Date().getTime(),
-      w: 600,
-      b: 600,
-      turn: gamesInSession[socket.gameId].chess._turn,
-    };
 
+    checkTimer();
     socket.join(gameId);
     io.to(gameId).emit("joinedGame");
     io.to(gameId).emit("timeLeft", gamesInSession[socket.gameId].timer);
+    io.to(socket.gameId).emit(
+      "updateLocalGame",
+      gamesInSession[gameId].chess.fen()
+    );
     console.log("games in session", gamesInSession);
   };
 
@@ -164,7 +181,7 @@ export default (io, socket) => {
 };
 
 function createUser(id, color) {
-  return { user: id, color, timeLeft: 600 };
+  return { user: id, color };
 }
 
 function updateTimer(timer, chess) {

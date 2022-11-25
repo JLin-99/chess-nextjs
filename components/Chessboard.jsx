@@ -6,7 +6,6 @@ import {
   getSquares,
   dragPiece,
   clearValidMovesClasses,
-  makeMove,
   addCheckStyle,
   clearCheckStyle,
 } from "../context/chessboard/ChessboardActions";
@@ -49,6 +48,7 @@ export default function Chessboard() {
         payload: getSquares(game, color),
       });
       socketColor = color;
+      console.log("color: ", color);
     });
 
     socket.on("joinedGame", () => {

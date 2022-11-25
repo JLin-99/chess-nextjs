@@ -41,13 +41,6 @@ export const getSquares = (chess, playerColor) => {
   return squares;
 };
 
-export const makeMove = (move) => {
-  const a = localChess.move(move);
-  console.log(localChess.ascii());
-  console.log(localChess);
-  return a;
-};
-
 export const validMoves = (move, chess) => {
   return chess.moves({ square: move, verbose: true });
 };
