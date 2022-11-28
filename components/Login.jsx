@@ -18,6 +18,9 @@ export default function Login({ setActiveGame }) {
     socket.on("gameCode", (code) => setGameCode(code));
     socket.on("alert", (msg) => setAlert(msg));
     socket.on("joinedGame", () => setActiveGame(true));
+    socket.on("opponentUsername", (username) =>
+      dispatch({ type: "SET_OPPONENT_USERNAME", payload: username })
+    );
   }, [socket]);
 
   const createNewGame = () => {
@@ -27,7 +30,7 @@ export default function Login({ setActiveGame }) {
     dispatch({ type: "SET_USERNAME", payload: username });
     setActiveOption("CreateGame");
 
-    socket.emit("createNewGame");
+    socket.emit("createNewGame", username);
   };
 
   const joinGame = () => {
@@ -37,12 +40,15 @@ export default function Login({ setActiveGame }) {
     setGameCode("");
 
     dispatch({ type: "SET_USERNAME", payload: username });
-    socket.emit("disconnectFromGame");
+
     setActiveOption("JoinGame");
+
+    // Delete existing game created by the user
+    socket.emit("disconnectFromGame");
   };
 
   const joinExistingGame = () => {
-    socket.emit("joinGame", gameCode);
+    socket.emit("joinGame", gameCode, username);
   };
 
   const handleCopy = (e) => {

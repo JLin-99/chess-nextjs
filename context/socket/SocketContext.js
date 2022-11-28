@@ -7,6 +7,7 @@ export const SocketProvider = ({ socket, children }) => {
   const initialState = {
     socket,
     username: "",
+    opponentUsername: "",
   };
 
   const [state, dispatch] = useReducer(socketReducer, initialState);

@@ -5,7 +5,7 @@ export default (io, socket) => {
   const disconnectFromGame = () => {
     if (socket.gameId) {
       const index = gamesInSession[socket.gameId].users
-        .map((user) => user.user)
+        .map((user) => user.id)
         .indexOf(socket.id);
 
       gamesInSession[socket.gameId].users.splice(index, 1);
@@ -18,7 +18,7 @@ export default (io, socket) => {
     }
   };
 
-  const createNewGame = () => {
+  const createNewGame = (username) => {
     // One game per socket
     if (socket.gameId) {
       disconnectFromGame();
@@ -30,7 +30,7 @@ export default (io, socket) => {
 
     gamesInSession[gameId] = {
       chess: new Chess(),
-      users: [createUser(socket.id, "w")],
+      users: [createUser(socket.id, username, "w")],
       playAgainConfirmations: 0,
     };
 
@@ -46,7 +46,7 @@ export default (io, socket) => {
     io.to(socket.id).emit("playerColor", "w");
   };
 
-  const joinGame = (gameId) => {
+  const joinGame = (gameId, username) => {
     if (!gamesInSession[gameId]) {
       io.to(socket.id).emit("alert", "Wrong game ID, try again");
       return;
@@ -66,23 +66,23 @@ export default (io, socket) => {
       return;
     }
 
-    console.log(
-      "users.map((user) => user.color)",
-      users.map((user) => user.color)
-    );
-
     users.length && users[0].color === "w"
-      ? users.push(createUser(socket.id, "b"))
-      : users.push(createUser(socket.id, "w"));
+      ? users.push(createUser(socket.id, username, "b"))
+      : users.push(createUser(socket.id, username, "w"));
 
     io.to(socket.id).emit(
       "playerColor",
-      users[users.map((user) => user.user).indexOf(socket.id)].color
+      users[users.map((user) => user.id).indexOf(socket.id)].color
     );
-    console.log(
-      "users.map((user) => user.color)",
-      users.map((user) => user.color)
-    );
+
+    users.forEach((user) => {
+      io.to(user.id).emit(
+        "opponentUsername",
+        users.filter((opponent) => opponent.id !== user.id)[0].username
+      );
+    });
+
+    console.log(users.filter((user) => user.id !== socket.id));
 
     socket.gameId = gameId;
 
@@ -156,14 +156,12 @@ export default (io, socket) => {
         turn: gamesInSession[socket.gameId].chess._turn,
       };
       game.playAgainConfirmations = 0;
-      console.log(game.users.map((user) => user.color));
       game.users.forEach(
         (user) => (user.color = user.color === "w" ? "b" : "w")
       );
-      console.log(game.users.map((user) => user.color));
 
       game.users.forEach((user) =>
-        io.to(user.user).emit("playerColor", user.color)
+        io.to(user.id).emit("playerColor", user.color)
       );
 
       io.to(socket.gameId).emit("updateLocalGame", game.chess.fen());
@@ -188,8 +186,8 @@ export default (io, socket) => {
   socket.on("move", makeMove);
 };
 
-function createUser(id, color) {
-  return { user: id, color };
+function createUser(id, username, color) {
+  return { id, username, color };
 }
 
 function updateTimer(timer, chess) {

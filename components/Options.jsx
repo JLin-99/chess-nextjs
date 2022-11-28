@@ -4,7 +4,7 @@ import SocketContext from "../context/socket/SocketContext";
 import styles from "../styles/Options.module.css";
 
 export default function Options() {
-  const { socket } = useContext(SocketContext);
+  const { socket, opponentUsername, username } = useContext(SocketContext);
   const { playerColor, gameOver } = useContext(ChessboardContext);
   const [whitePlayerTime, setWhitePlayerTime] = useState(600);
   const [blackPlayerTime, setBlackPlayerTime] = useState(600);
@@ -63,7 +63,7 @@ export default function Options() {
     <div className={styles.container}>
       {playerColor === "w" ? (
         <h3>
-          bTimer:{" "}
+          {opponentUsername}:{" "}
           {`${("0" + (Math.floor(blackPlayerTime / 60) % 60)).slice(-2)}:${(
             "0" +
             (blackPlayerTime % 60)
@@ -71,7 +71,7 @@ export default function Options() {
         </h3>
       ) : (
         <h3>
-          WTimer:{" "}
+          {opponentUsername}:{" "}
           {`${("0" + (Math.floor(whitePlayerTime / 60) % 60)).slice(-2)}:${(
             "0" +
             (whitePlayerTime % 60)
@@ -94,7 +94,7 @@ export default function Options() {
 
       {playerColor === "w" ? (
         <h3>
-          WTimer:{" "}
+          {username}:{" "}
           {`${("0" + (Math.floor(whitePlayerTime / 60) % 60)).slice(-2)}:${(
             "0" +
             (whitePlayerTime % 60)
@@ -102,7 +102,7 @@ export default function Options() {
         </h3>
       ) : (
         <h3>
-          bTimer:{" "}
+          {username}:{" "}
           {`${("0" + (Math.floor(blackPlayerTime / 60) % 60)).slice(-2)}:${(
             "0" +
             (blackPlayerTime % 60)

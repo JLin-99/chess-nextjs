@@ -21,8 +21,6 @@ export default function Piece({ piece }) {
       chess
     );
 
-    console.log(playerColor);
-
     if (validMovesNodes.length !== 0) {
       pieceNode.parentElement.classList.toggle(styles.activeSquare);
       dragPiece(e);
