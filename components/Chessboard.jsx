@@ -48,7 +48,6 @@ export default function Chessboard() {
         payload: getSquares(game, color),
       });
       socketColor = color;
-      console.log("color: ", color);
     });
 
     socket.on("joinedGame", () => {
@@ -83,7 +82,6 @@ export default function Chessboard() {
 
   const handlePieceDrop = (e) => {
     if (!activePiece) return;
-    console.log(chess);
 
     let landingTarget = e.target;
 

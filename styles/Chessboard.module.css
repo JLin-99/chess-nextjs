@@ -1,9 +1,10 @@
 .chessboard {
   background-color: var(--board-bg-color);
+  background-color: var(--black-square-bg-color);
   display: grid;
   grid-template: repeat(8, 1fr) / repeat(8, 1fr);
-  gap: 0.2rem;
-  padding: 0.2rem;
+  gap: 0.3rem;
+  padding: 0.3rem;
   user-select: none;
   -webkit-user-select: none;
 }
@@ -12,6 +13,13 @@
   width: var(--square-size);
   height: var(--square-size);
   position: relative;
+
+  border: 0.4rem solid;
+  border-right-color: #fdedda;
+  border-top-color: #eeccbc;
+  border-left-color: #c0926e;
+  border-bottom-color: #a77978;
+
 }
 
 .canGrab:hover {
@@ -32,6 +40,7 @@
   position: fixed;
   color: var(--board-bg-color);
   padding-left: 0.2rem;
+  font-size: 1.5vh;
 }
 
 .piece {
@@ -40,6 +49,10 @@
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+
+  position: absolute;
+  left: -0.4rem;
+  top: -0.4rem;
 }
 
 .piece:active {

@@ -83,8 +83,8 @@ export const dragPiece = (e, pieceNode = e.target) => {
 
 export const dropPiece = (pieceNode) => {
   pieceNode.style.position = "absolute";
-  pieceNode.style.left = "0px";
-  pieceNode.style.top = "0px";
+  pieceNode.style.left = "-0.4rem";
+  pieceNode.style.top = "-0.4rem";
   pieceNode.style.zIndex = 0;
 };
 

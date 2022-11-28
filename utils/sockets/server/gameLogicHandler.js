@@ -8,6 +8,8 @@ export default (io, socket) => {
         .map((user) => user.user)
         .indexOf(socket.id);
 
+      gamesInSession[socket.gameId].users.splice(index, 1);
+
       if (!gamesInSession[socket.gameId].users.length) {
         delete gamesInSession[socket.gameId];
       }
@@ -81,7 +83,6 @@ export default (io, socket) => {
       "users.map((user) => user.color)",
       users.map((user) => user.color)
     );
-    console.log("users[users.map((user) => user.user).indexOf(socket.id)]");
 
     socket.gameId = gameId;
 
@@ -108,14 +109,13 @@ export default (io, socket) => {
 
     if (chess.inCheck()) {
       io.to(socket.gameId).emit("inCheck", chess._turn + "k");
-      // TODO: Add messages context locally for adding chessInfo
-      // io.to(socket.gameId).emit("chatMessage", {
-      //   author: socket.gameId,
-      //   message: `${
-      //     chess._turn === "b" ? "Black" : "White"
-      //   } player is in check`,
-      //   type: "chessInfo",
-      // });
+      io.to(socket.gameId).emit("chatMessage", {
+        author: socket.gameId,
+        message: `${
+          chess._turn === "b" ? "Black" : "White"
+        } player is in check`,
+        type: "chessInfo",
+      });
     } else {
       io.to(socket.gameId).emit("notInCheck");
     }
