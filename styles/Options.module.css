@@ -5,5 +5,5 @@
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  place-content: space-evenly;
+  place-content: space-between;
 }

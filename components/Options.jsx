@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import ChessboardContext from "../context/chessboard/ChessboardContext";
 import SocketContext from "../context/socket/SocketContext";
 import styles from "../styles/Options.module.css";
+import Timer from "./Timer";
 
 export default function Options() {
   const { socket, opponentUsername, username } = useContext(SocketContext);
@@ -62,21 +63,17 @@ export default function Options() {
   return (
     <div className={styles.container}>
       {playerColor === "w" ? (
-        <h3>
-          {opponentUsername}:{" "}
-          {`${("0" + (Math.floor(blackPlayerTime / 60) % 60)).slice(-2)}:${(
-            "0" +
-            (blackPlayerTime % 60)
-          ).slice(-2)}`}
-        </h3>
+        <Timer
+          username={opponentUsername}
+          time={blackPlayerTime}
+          playerColor={"b"}
+        />
       ) : (
-        <h3>
-          {opponentUsername}:{" "}
-          {`${("0" + (Math.floor(whitePlayerTime / 60) % 60)).slice(-2)}:${(
-            "0" +
-            (whitePlayerTime % 60)
-          ).slice(-2)}`}
-        </h3>
+        <Timer
+          username={opponentUsername}
+          time={whitePlayerTime}
+          playerColor={"w"}
+        />
       )}
 
       {Object.keys(gameOver).length !== 0 && (
@@ -93,21 +90,9 @@ export default function Options() {
       )}
 
       {playerColor === "w" ? (
-        <h3>
-          {username}:{" "}
-          {`${("0" + (Math.floor(whitePlayerTime / 60) % 60)).slice(-2)}:${(
-            "0" +
-            (whitePlayerTime % 60)
-          ).slice(-2)}`}
-        </h3>
+        <Timer username={username} time={whitePlayerTime} playerColor={"w"} />
       ) : (
-        <h3>
-          {username}:{" "}
-          {`${("0" + (Math.floor(blackPlayerTime / 60) % 60)).slice(-2)}:${(
-            "0" +
-            (blackPlayerTime % 60)
-          ).slice(-2)}`}
-        </h3>
+        <Timer username={username} time={blackPlayerTime} playerColor={"b"} />
       )}
     </div>
   );

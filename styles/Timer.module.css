@@ -1,0 +1,25 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.whiteTimer {
+  background-color: #eee3cb;
+  color: #8b4730;
+  padding: 1rem;
+  font-size: 2rem;
+  border-radius: 0.5rem;
+}
+
+.blackTimer {
+  background-color: #8b4730;
+  color: #eee3cb;
+  padding: 1rem;
+  font-size: 2rem;
+  border-radius: 0.5rem;
+}
+
+.username {
+  font-size: 1.5rem;
+  padding-top: 1rem;
+}
