@@ -156,6 +156,15 @@ export default (io, socket) => {
         turn: gamesInSession[socket.gameId].chess._turn,
       };
       game.playAgainConfirmations = 0;
+      console.log(game.users.map((user) => user.color));
+      game.users.forEach(
+        (user) => (user.color = user.color === "w" ? "b" : "w")
+      );
+      console.log(game.users.map((user) => user.color));
+
+      game.users.forEach((user) =>
+        io.to(user.user).emit("playerColor", user.color)
+      );
 
       io.to(socket.gameId).emit("updateLocalGame", game.chess.fen());
       io.to(socket.gameId).emit("timeLeft", game.timer);

@@ -139,7 +139,7 @@ export default function Chessboard() {
   };
 
   return (
-    <>
+    <div className={styles.container}>
       {isPromotion && (
         <Promotion setIsPromotion={setIsPromotion} move={promotionMove} />
       )}
@@ -155,6 +155,6 @@ export default function Chessboard() {
           <Square key={sqr.coord} sqr={sqr} />
         ))}
       </div>
-    </>
+    </div>
   );
 }

@@ -1,3 +1,7 @@
+.container {
+  position: relative;
+}
+
 .chessboard {
   background-color: var(--board-bg-color);
   background-color: var(--black-square-bg-color);
@@ -37,7 +41,7 @@
 
 .whiteSquare p,
 .blackSquare p {
-  position: fixed;
+  position: sticky;
   color: var(--board-bg-color);
   padding-left: 0.2rem;
   font-size: 1.5vh;
