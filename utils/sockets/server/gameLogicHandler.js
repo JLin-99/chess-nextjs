@@ -101,7 +101,6 @@ export default (io, socket) => {
     const chess = gamesInSession[socket.gameId].chess;
 
     chess.move(move);
-    console.log(chess.ascii());
 
     checkTimer();
 
