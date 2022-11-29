@@ -36,7 +36,7 @@ export default (io, socket) => {
 
     gamesInSession[socket.gameId].timer = {
       lastTimestamp: new Date().getTime(),
-      w: 600,
+      w: 6,
       b: 600,
       turn: gamesInSession[socket.gameId].chess._turn,
     };

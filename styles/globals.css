@@ -1,15 +1,14 @@
 :root {
   --board-size: 80vh;
   --square-size: calc(var(--board-size) / 8);
-  --board-bg-color: #967E76;
-  --white-square-bg-color: #EEE3CB;
-  --black-square-bg-color: #D7C0AE;
+  --board-bg-color: #967e76;
+  --white-square-bg-color: #eee3cb;
+  --black-square-bg-color: #d7c0ae;
   --text-color: #2b2a33;
 }
 
 html {
   font-size: 62.5%;
-
 }
 
 body {
@@ -17,7 +16,7 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-
+  background: #f3efe8;
 }
 
 a {
@@ -38,6 +37,6 @@ a {
 
   body {
     color: white;
-    background: black;
+    background: #282a3a;
   }
 }

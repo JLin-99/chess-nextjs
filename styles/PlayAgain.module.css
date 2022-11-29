@@ -1,0 +1,11 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.container button {
+  font-size: 2rem;
+  padding: 1rem;
+  margin-top: 1rem;
+}

@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import ChessboardContext from "../context/chessboard/ChessboardContext";
 import SocketContext from "../context/socket/SocketContext";
 import styles from "../styles/Options.module.css";
+import PlayAgain from "./PlayAgain";
 import Timer from "./Timer";
 
 export default function Options() {
@@ -54,45 +55,28 @@ export default function Options() {
     return () => clearInterval(interval);
   }, [turn, gameOver]);
 
-  const playAgain = (e) => {
-    socket.emit("playAgain");
-    e.target.textContent = "Waiting for the opponent...";
-    e.target.disabled = true;
-  };
-
   return (
     <div className={styles.container}>
-      {playerColor === "w" ? (
-        <Timer
-          username={opponentUsername}
-          time={blackPlayerTime}
-          playerColor={"b"}
-        />
-      ) : (
+      {playerColor === "b" ? (
         <Timer
           username={opponentUsername}
           time={whitePlayerTime}
           playerColor={"w"}
         />
-      )}
-
-      {Object.keys(gameOver).length !== 0 && (
-        <div>
-          <h2>Game Over: {gameOver.type}</h2>
-          {gameOver.winner === "tie" ? (
-            <h2>Tie</h2>
-          ) : (
-            // TODO: Add opponent username to context
-            <h2>Winner: {gameOver.winner}</h2>
-          )}
-          <button onClick={playAgain}>Play Again!</button>
-        </div>
-      )}
-
-      {playerColor === "w" ? (
-        <Timer username={username} time={whitePlayerTime} playerColor={"w"} />
       ) : (
+        <Timer
+          username={opponentUsername}
+          time={blackPlayerTime}
+          playerColor={"b"}
+        />
+      )}
+
+      {Object.keys(gameOver).length !== 0 && <PlayAgain gameOver={gameOver} />}
+
+      {playerColor === "b" ? (
         <Timer username={username} time={blackPlayerTime} playerColor={"b"} />
+      ) : (
+        <Timer username={username} time={whitePlayerTime} playerColor={"w"} />
       )}
     </div>
   );
