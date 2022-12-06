@@ -1,10 +1,10 @@
 .container {
+  height: 80vh;
   padding: 2.5rem;
   display: grid;
   grid-template-columns: 0.5fr auto 1fr;
   place-items: center;
   gap: 2.5rem;
-  /* background-color: #967E76AA; */
 }
 
 .blur {

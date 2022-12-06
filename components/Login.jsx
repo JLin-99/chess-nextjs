@@ -18,9 +18,10 @@ export default function Login({ setActiveGame }) {
     socket.on("gameCode", (code) => setGameCode(code));
     socket.on("alert", (msg) => setAlert(msg));
     socket.on("joinedGame", () => setActiveGame(true));
-    socket.on("opponentUsername", (username) =>
-      dispatch({ type: "SET_OPPONENT_USERNAME", payload: username })
-    );
+    socket.on("opponentData", (opponent) => {
+      dispatch({ type: "SET_OPPONENT_USERNAME", payload: opponent.username });
+      dispatch({ type: "SET_OPPONENT_ID", payload: opponent.id });
+    });
   }, [socket]);
 
   const createNewGame = () => {

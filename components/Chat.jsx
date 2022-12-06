@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import ChessboardContext from "../context/chessboard/ChessboardContext";
 import SocketContext from "../context/socket/SocketContext";
 import styles from "../styles/Chat.module.css";
@@ -9,6 +9,7 @@ export default function Chat() {
   const [message, setMessage] = useState("");
   const { socket, username } = useContext(SocketContext);
   const { gameOver } = useContext(ChessboardContext);
+  const bottomRef = useRef(null);
 
   useEffect(() => {
     if (!socket) {
@@ -19,6 +20,10 @@ export default function Chat() {
       setMessages((currentMsgs) => [...currentMsgs, msg]);
     });
   }, [socket]);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   useEffect(() => {
     if (username) socket.emit("setUsername", username);
@@ -48,6 +53,7 @@ export default function Chat() {
 
     socket.emit("sendChatMessage", {
       author: username,
+      authorId: socket.id,
       message,
       type: "userChat",
     });
@@ -58,11 +64,13 @@ export default function Chat() {
   return (
     <div className={styles.container}>
       <h2>Chat with your friend</h2>
-      <ul className={styles.messages}>
+      <div className={styles.chat}>
         {messages.map((msg, i) => (
           <ChatMessage key={i} message={msg} />
         ))}
-      </ul>
+
+        <div ref={bottomRef} />
+      </div>
       <form className={styles.chatForm} onSubmit={handleSubmit}>
         <input
           id="input"

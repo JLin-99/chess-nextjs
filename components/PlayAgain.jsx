@@ -18,7 +18,6 @@ export default function PlayAgain({ gameOver }) {
       {gameOver.winner === "tie" ? (
         <h2>Tie</h2>
       ) : (
-        // TODO: Add opponent username to context
         <h2>
           Winner:{" "}
           {gameOver.winner === playerColor ? username : opponentUsername}

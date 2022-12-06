@@ -77,8 +77,8 @@ export default (io, socket) => {
 
     users.forEach((user) => {
       io.to(user.id).emit(
-        "opponentUsername",
-        users.filter((opponent) => opponent.id !== user.id)[0].username
+        "opponentData",
+        users.filter((opponent) => opponent.id !== user.id)[0]
       );
     });
 
@@ -169,7 +169,8 @@ export default (io, socket) => {
       io.to(socket.gameId).emit("gameOver", {});
       io.to(socket.gameId).emit("notInCheck");
       io.to(socket.gameId).emit("chatMessage", {
-        author: socket.gameId,
+        author: "Server",
+        authorId: socket.gameId,
         message: "New game started",
         type: "chessInfo",
       });

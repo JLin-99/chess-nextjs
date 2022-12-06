@@ -5,6 +5,8 @@ const socketReducer = (state, action) => {
       return { ...state, username: action.payload };
     case "SET_OPPONENT_USERNAME":
       return { ...state, opponentUsername: action.payload };
+    case "SET_OPPONENT_ID":
+      return { ...state, opponentId: action.payload };
     default:
       return state;
   }
