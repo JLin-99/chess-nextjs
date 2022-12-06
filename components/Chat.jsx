@@ -3,10 +3,12 @@ import ChessboardContext from "../context/chessboard/ChessboardContext";
 import SocketContext from "../context/socket/SocketContext";
 import styles from "../styles/Chat.module.css";
 import ChatMessage from "./ChatMessage";
+import { IoMdChatboxes } from "react-icons/io";
 
 export default function Chat() {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
+  const [lastUsername, setLastUsername] = useState("");
   const { socket, username } = useContext(SocketContext);
   const { gameOver } = useContext(ChessboardContext);
   const bottomRef = useRef(null);
@@ -55,6 +57,9 @@ export default function Chat() {
       author: username,
       authorId: socket.id,
       message,
+      time: `${("0" + new Date().getHours()).slice(-2)}:${(
+        "0" + new Date().getMinutes()
+      ).slice(-2)}`,
       type: "userChat",
     });
 
@@ -63,10 +68,17 @@ export default function Chat() {
 
   return (
     <div className={styles.container}>
-      <h2>Chat with your friend</h2>
+      <div className={styles.header}>
+        <IoMdChatboxes />
+      </div>
       <div className={styles.chat}>
         {messages.map((msg, i) => (
-          <ChatMessage key={i} message={msg} />
+          <ChatMessage
+            key={i}
+            message={msg}
+            lastUsername={lastUsername}
+            setLastUsername={setLastUsername}
+          />
         ))}
 
         <div ref={bottomRef} />
