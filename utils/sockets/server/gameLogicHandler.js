@@ -108,13 +108,15 @@ export default (io, socket) => {
 
     if (chess.inCheck()) {
       io.to(socket.gameId).emit("inCheck", chess._turn + "k");
-      io.to(socket.gameId).emit("chatMessage", {
-        author: socket.gameId,
-        message: `${
-          chess._turn === "b" ? "Black" : "White"
-        } player is in check`,
-        type: "chessInfo",
-      });
+      if (!chess.isCheckmate()) {
+        io.to(socket.gameId).emit("chatMessage", {
+          author: socket.gameId,
+          message: `${
+            chess._turn === "b" ? "Black" : "White"
+          } player is in check`,
+          type: "chessInfo",
+        });
+      }
     } else {
       io.to(socket.gameId).emit("notInCheck");
     }
@@ -174,6 +176,7 @@ export default (io, socket) => {
         message: "New game started",
         type: "chessInfo",
       });
+      io.to(socket.gameId).emit("gameRestarted");
     }
   };
 

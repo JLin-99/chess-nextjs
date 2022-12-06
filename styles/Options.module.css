@@ -1,5 +1,5 @@
 .container {
-  background-color: grey;
+  background-color: var(--ui-bg-color);
   place-self: stretch;
   border-radius: 1rem;
   padding: 1.5rem;

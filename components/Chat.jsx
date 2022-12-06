@@ -37,7 +37,7 @@ export default function Chat() {
         ...currentMsgs,
         {
           type: "chessInfo",
-          message: `Game Over - ${gameOver.type} - ${
+          message: `${gameOver.type} - ${
             gameOver.winner === "tie"
               ? "Tie"
               : gameOver.winner === "w"

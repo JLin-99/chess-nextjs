@@ -20,6 +20,7 @@
 }
 
 .username {
-  font-size: 1.5rem;
+  font-size: medium;
   padding-top: 1rem;
+  font-weight: bold;
 }

@@ -1,5 +1,5 @@
 .container {
-  height: 80vh;
+  height: 90vh;
   padding: 2.5rem;
   display: grid;
   grid-template-columns: 0.5fr auto 1fr;

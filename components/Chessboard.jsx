@@ -28,6 +28,11 @@ export default function Chessboard() {
   const { socket } = useContext(SocketContext);
   const [isPromotion, setIsPromotion] = useState(false);
   const [promotionMove, setPromotionMove] = useState(null);
+  const dropSound = new Audio("https://www.fesliyanstudios.com/play-mp3/2910");
+  const leavePieceSound = new Audio(
+    "https://www.fesliyanstudios.com/play-mp3/5265"
+  );
+  // dropSound.src = "../public/assets/audio/pop_sound.wav";
 
   useEffect(() => {
     const game = getInitialGame();
@@ -55,6 +60,11 @@ export default function Chessboard() {
         type: "UPDATE_SQUARES",
         payload: getSquares(game, socketColor),
       });
+      new Audio("https://www.fesliyanstudios.com/play-mp3/5265").play();
+    });
+
+    socket.on("gameRestarted", () => {
+      new Audio("https://www.fesliyanstudios.com/play-mp3/5265").play();
     });
 
     socket.on("updateLocalGame", (fen) => {
@@ -77,6 +87,16 @@ export default function Chessboard() {
 
     socket.on("gameOver", (gameOverStatus) => {
       dispatch({ type: "SET_GAME_OVER", payload: gameOverStatus });
+      const audio = new Audio("https://www.fesliyanstudios.com/play-mp3/5249");
+      audio.volume = 0.1;
+      if (Object.keys(gameOverStatus).length !== 0) {
+        if (socketColor !== gameOverStatus.winner) {
+          audio.src = "https://www.fesliyanstudios.com/play-mp3/3111";
+        } else {
+          audio.src = "https://www.fesliyanstudios.com/play-mp3/5249";
+        }
+        audio.play();
+      }
     });
   }, []);
 
@@ -98,6 +118,7 @@ export default function Chessboard() {
       ) {
         // Move it locally first and then send it to server
         const res = chess.move(move);
+        dropSound.play();
 
         // Pawn promotion
         if (!res && possibleMoves) {
