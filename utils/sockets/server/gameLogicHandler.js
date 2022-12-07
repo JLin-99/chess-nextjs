@@ -74,12 +74,14 @@ export default (io, socket) => {
     });
 
     socket.gameId = gameId;
-    gamesInSession[socket.gameId].timer = {
-      lastTimestamp: new Date().getTime(),
-      w: 600,
-      b: 600,
-      turn: gamesInSession[socket.gameId].chess._turn,
-    };
+    if (!gamesInSession[socket.gameId].timer) {
+      gamesInSession[socket.gameId].timer = {
+        lastTimestamp: new Date().getTime(),
+        w: 600,
+        b: 600,
+        turn: gamesInSession[socket.gameId].chess._turn,
+      };
+    }
 
     checkTimer();
     socket.join(gameId);
