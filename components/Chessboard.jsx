@@ -29,10 +29,6 @@ export default function Chessboard() {
   const [isPromotion, setIsPromotion] = useState(false);
   const [promotionMove, setPromotionMove] = useState(null);
   const dropSound = new Audio("https://www.fesliyanstudios.com/play-mp3/2910");
-  const leavePieceSound = new Audio(
-    "https://www.fesliyanstudios.com/play-mp3/5265"
-  );
-  // dropSound.src = "../public/assets/audio/pop_sound.wav";
 
   useEffect(() => {
     const game = getInitialGame();
@@ -87,7 +83,7 @@ export default function Chessboard() {
 
     socket.on("gameOver", (gameOverStatus) => {
       dispatch({ type: "SET_GAME_OVER", payload: gameOverStatus });
-      const audio = new Audio("https://www.fesliyanstudios.com/play-mp3/5249");
+      const audio = new Audio();
       audio.volume = 0.1;
       if (Object.keys(gameOverStatus).length !== 0) {
         if (socketColor !== gameOverStatus.winner) {

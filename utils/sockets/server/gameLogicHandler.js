@@ -36,7 +36,7 @@ export default (io, socket) => {
 
     gamesInSession[socket.gameId].timer = {
       lastTimestamp: new Date().getTime(),
-      w: 6,
+      w: 600,
       b: 600,
       turn: gamesInSession[socket.gameId].chess._turn,
     };
@@ -55,13 +55,11 @@ export default (io, socket) => {
     const users = gamesInSession[gameId].users;
 
     if (socket.gameId) {
-      console.log("Already in " + socket.gameId + " game");
       io.to(socket.id).emit("alert", "Already in " + socket.gameId + " game");
       return;
     }
 
     if (users.length >= 2) {
-      console.log("Full Lobby");
       io.to(socket.id).emit("alert", "Full Lobby");
       return;
     }
@@ -82,8 +80,6 @@ export default (io, socket) => {
       );
     });
 
-    console.log(users.filter((user) => user.id !== socket.id));
-
     socket.gameId = gameId;
 
     checkTimer();
@@ -94,7 +90,6 @@ export default (io, socket) => {
       "updateLocalGame",
       gamesInSession[gameId].chess.fen()
     );
-    console.log("games in session", gamesInSession);
   };
 
   const makeMove = (move) => {

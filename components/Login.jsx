@@ -57,9 +57,8 @@ export default function Login({ setActiveGame }) {
     socket.emit("joinGame", gameCode, username);
   };
 
-  const handleCopy = (e) => {
+  const handleCopy = () => {
     navigator.clipboard.writeText(gameCode);
-    // e.target.parent.style.borderColor = "green";
     document.getElementById("copy").style.color = "#DAE2B6";
     document.getElementById("gameCode").style.borderColor = "#DAE2B6";
   };
@@ -145,21 +144,6 @@ export default function Login({ setActiveGame }) {
 
           {activeOption === "JoinGame" && (
             <>
-              {/* <div>
-                <label>Game code:</label>
-                <input
-                  type="text"
-                  value={gameCode}
-                  onChange={(e) => setGameCode(e.target.value)}
-                />
-                <button onClick={joinExistingGame}>Join!</button>
-              </div>
-              {alert && <div>{alert}</div>}
-              <div>
-                <p>or</p>
-                <button onClick={createNewGame}>Create a new game!</button>
-              </div> */}
-
               <form className={styles.inputForm} onSubmit={joinExistingGame}>
                 <label>Game Code</label>
                 <div className={styles.inputContainer}>
