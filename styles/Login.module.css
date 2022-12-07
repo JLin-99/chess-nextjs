@@ -6,7 +6,6 @@
   height: 100vh;
   /* background-color: #967E76AA; */
 
-
   display: flex;
   justify-content: center;
   align-items: center;
@@ -18,42 +17,124 @@
   opacity: 1;
   min-width: 50vw;
   min-height: 50vh;
-  background-color: var(--black-square-bg-color);
+  background-color: var(--ui-bg-color);
   border-radius: 2rem;
   padding: 2rem;
   color: var(--text-color);
+  border: solid 0.2rem var(--board-bg-color);
 
+  color: var(--white-square-bg-color);
+}
+
+.container {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  justify-content: space-evenly;
+  justify-content: space-around;
   text-align: center;
+  height: 30vh;
 }
 
 .popupInner h1 {
   font-size: 5rem;
+  margin-bottom: 1rem;
 }
 
-.popupInner .username {
+.popupInner .inputForm {
   display: flex;
   flex-direction: column;
   align-content: center;
 }
 
-.popupInner .username label {
+.popupInner .inputForm label {
   padding-bottom: 1rem;
   font-size: 2rem;
-}
-
-.popupInner .username input {
-  padding-bottom: 1rem;
-  font-size: 2rem;
-  text-align: center;
-  width: 50%;
-  margin: auto;
 }
 
 .popupInner .options {
   display: flex;
   justify-content: space-evenly;
+}
+
+.btn {
+  width: 8rem;
+  height: 8rem;
+  background: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
+  display: flex;
+  place-items: center;
+  transform: rotate(-30deg);
+}
+
+.btnText {
+  transform: rotate(30deg);
+  font-weight: bold;
+  font-size: 2rem;
+  text-shadow: var(--ui-bg-color) 0.2rem 0.2rem 0.2rem;
+  transition: 2s;
+}
+
+.noHover {
+  pointer-events: none;
+  opacity: 0.75;
+}
+
+.btnText:hover {
+  font-size: 2.5rem;
+  user-select: none;
+  cursor: pointer;
+}
+
+.inputContainer {
+  width: 50%;
+  display: flex;
+  place-self: center;
+  place-content: center;
+  border: 0.2rem var(--black-square-bg-color) solid;
+  border-radius: 2rem;
+  margin-bottom: 1rem;
+  background-color: #2b2a33;
+}
+
+.inputContainer .iconBtn {
+  place-self: center;
+  padding: 1rem 1.5rem 1rem 1rem;
+  font-size: 1.5rem;
+}
+
+.iconBtn:hover {
+  opacity: 0.8;
+}
+
+.inputForm .inputContainer input {
+  text-align: center;
+  line-height: 4rem;
+  font-size: 2rem;
+  margin-bottom: 0;
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  border-radius: 2rem;
+  outline: none;
+}
+
+.pl3 {
+  padding-left: 3rem;
+}
+
+.inputContainer:focus-within {
+  outline-style: dashed;
+}
+
+.iconBtn {
+  font-size: 1.5rem;
+  padding: 0;
+  box-sizing: content-box;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: inline-block;
 }

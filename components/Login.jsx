@@ -1,6 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import SocketContext from "../context/socket/SocketContext";
 import styles from "../styles/Login.module.css";
+import createBtn from "../public/assets/createBtn.png";
+import joinBtn from "../public/assets/joinBtn.png";
+import { FaCopy } from "react-icons/fa";
 
 export default function Login({ setActiveGame }) {
   const [username, setUsername] = useState("");
@@ -54,69 +57,101 @@ export default function Login({ setActiveGame }) {
 
   const handleCopy = (e) => {
     navigator.clipboard.writeText(gameCode);
-    e.target.style.borderColor = "green";
+    // e.target.parent.style.borderColor = "green";
+    document.getElementById("copy").style.color = "#DAE2B6";
+    document.getElementById("gameCode").style.borderColor = "#DAE2B6";
   };
 
   return (
     <div className={styles.popup}>
       <div className={styles.popupInner}>
         <h1>Welcome to ChocoChess!!!</h1>
+        <div className={styles.container}>
+          {!activeOption && (
+            <>
+              <div className={styles.inputForm}>
+                <label>Choose your username:</label>
+                <div className={styles.inputContainer}>
+                  <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className={styles.options}>
+                <div
+                  className={`${styles.btn} ${!username && styles.noHover}`}
+                  onClick={joinGame}
+                  disabled={!username}
+                  style={{
+                    backgroundImage: `url(${joinBtn.src})`,
+                  }}
+                >
+                  <div className={styles.btnText}>Join Game!</div>
+                </div>
+                <div
+                  className={`${styles.btn} ${!username && styles.noHover}`}
+                  onClick={createNewGame}
+                  disabled={!username}
+                  style={{
+                    backgroundImage: `url(${createBtn.src})`,
+                  }}
+                >
+                  <div className={styles.btnText}>Create New Game!</div>
+                </div>
+              </div>
+            </>
+          )}
 
-        {!activeOption && (
-          <>
-            <div className={styles.username}>
-              <label>Choose your username:</label>
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </div>
-            <div className={styles.options}>
-              <button onClick={createNewGame} disabled={!username}>
-                Create New Game!
-              </button>
-              <button onClick={joinGame} disabled={!username}>
-                Join Game!
-              </button>
-            </div>
-          </>
-        )}
+          {activeOption === "CreateGame" && (
+            <>
+              <div className={styles.inputForm}>
+                <label>Send this code to your opponent!</label>
+                <div className={styles.inputContainer} id="gameCode">
+                  <input
+                    type="text"
+                    value={gameCode}
+                    readOnly
+                    className={styles.pl3}
+                  />
+                  <div
+                    className={styles.iconBtn}
+                    onClick={handleCopy}
+                    id="copy"
+                  >
+                    <FaCopy />
+                  </div>
+                </div>
+              </div>
 
-        {activeOption === "CreateGame" && (
-          <>
-            <div>
-              <label>Send this code to your opponent!</label>
-              <input type="text" value={gameCode} readOnly />
-              <button onClick={handleCopy}>Copy!</button>
-            </div>
+              <p>Waiting for your opponent to join...</p>
+              <div>
+                <p>or</p>
+                <button onClick={joinGame}>Join another Game!</button>
+              </div>
+            </>
+          )}
 
-            <p>Waiting for your opponent to join...</p>
-            <div>
-              <p>or</p>
-              <button onClick={joinGame}>Join another Game!</button>
-            </div>
-          </>
-        )}
-
-        {activeOption === "JoinGame" && (
-          <>
-            <div>
-              <label>Paste code here!</label>
-              <input
-                type="text"
-                value={gameCode}
-                onChange={(e) => setGameCode(e.target.value)}
-              />
-              <button onClick={joinExistingGame}>Join!</button>
-            </div>
-            {alert && <div>{alert}</div>}
-            <div>
-              <p>or</p>
-              <button onClick={createNewGame}>Create a new game!</button>
-            </div>
-          </>
-        )}
+          {activeOption === "JoinGame" && (
+            <>
+              <div>
+                <label>Game code:</label>
+                <input
+                  type="text"
+                  value={gameCode}
+                  onChange={(e) => setGameCode(e.target.value)}
+                />
+                <button onClick={joinExistingGame}>Join!</button>
+              </div>
+              {alert && <div>{alert}</div>}
+              <div>
+                <p>or</p>
+                <button onClick={createNewGame}>Create a new game!</button>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

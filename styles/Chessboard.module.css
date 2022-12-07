@@ -1,5 +1,6 @@
 .container {
   position: relative;
+  border: solid 0.2rem var(--board-bg-color);
 }
 
 .chessboard {
@@ -23,7 +24,6 @@
   border-top-color: #eeccbc;
   border-left-color: #c0926e;
   border-bottom-color: #a77978;
-
 }
 
 .canGrab:hover {
@@ -88,7 +88,7 @@
 .possibleMove:hover,
 .captureMove:hover,
 .promotionMove:hover {
-  background-color: #B7C4CF;
+  background-color: #b7c4cf;
 }
 
 .possibleMove:hover::before {
@@ -107,7 +107,7 @@
 }
 
 .activeSquare {
-  background-color: #B7C4CF;
+  background-color: #b7c4cf;
   position: relative;
   z-index: 5;
 }

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import spinner from "../public/assets/spinner.gif";
+import spinner from "../public/assets/chocolateLoading.gif";
 import styles from "../styles/Spinner.module.css";
 
 export default function Spinner() {
