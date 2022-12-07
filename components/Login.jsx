@@ -4,6 +4,7 @@ import styles from "../styles/Login.module.css";
 import createBtn from "../public/assets/createBtn.png";
 import joinBtn from "../public/assets/joinBtn.png";
 import { FaCopy } from "react-icons/fa";
+import { AiOutlineEnter } from "react-icons/ai";
 
 export default function Login({ setActiveGame }) {
   const [username, setUsername] = useState("");
@@ -51,7 +52,8 @@ export default function Login({ setActiveGame }) {
     socket.emit("disconnectFromGame");
   };
 
-  const joinExistingGame = () => {
+  const joinExistingGame = (e) => {
+    e.preventDefault();
     socket.emit("joinGame", gameCode, username);
   };
 
@@ -126,16 +128,24 @@ export default function Login({ setActiveGame }) {
               </div>
 
               <p>Waiting for your opponent to join...</p>
-              <div>
-                <p>or</p>
-                <button onClick={joinGame}>Join another Game!</button>
+              <p>or</p>
+              <div className={styles.options}>
+                <div
+                  className={styles.btn}
+                  onClick={joinGame}
+                  style={{
+                    backgroundImage: `url(${joinBtn.src})`,
+                  }}
+                >
+                  <div className={styles.btnText}>Join Another Game!</div>
+                </div>
               </div>
             </>
           )}
 
           {activeOption === "JoinGame" && (
             <>
-              <div>
+              {/* <div>
                 <label>Game code:</label>
                 <input
                   type="text"
@@ -148,6 +158,35 @@ export default function Login({ setActiveGame }) {
               <div>
                 <p>or</p>
                 <button onClick={createNewGame}>Create a new game!</button>
+              </div> */}
+
+              <form className={styles.inputForm} onSubmit={joinExistingGame}>
+                <label>Game Code</label>
+                <div className={styles.inputContainer}>
+                  <input
+                    type="text"
+                    value={gameCode}
+                    onChange={(e) => setGameCode(e.target.value)}
+                    className={styles.pl3}
+                  />
+                  <div className={styles.iconBtn} onClick={joinExistingGame}>
+                    <AiOutlineEnter />
+                  </div>
+                </div>
+                {alert && <div className={styles.alert}>{alert}</div>}
+              </form>
+
+              <p>or</p>
+              <div className={styles.options}>
+                <div
+                  className={styles.btn}
+                  onClick={createNewGame}
+                  style={{
+                    backgroundImage: `url(${createBtn.src})`,
+                  }}
+                >
+                  <div className={styles.btnText}>Create New Game!</div>
+                </div>
               </div>
             </>
           )}
