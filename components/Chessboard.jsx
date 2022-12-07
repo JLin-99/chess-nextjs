@@ -94,6 +94,10 @@ export default function Chessboard() {
         audio.play();
       }
     });
+
+    socket.on("moveMadeByOpponent", () => {
+      new Audio("https://www.fesliyanstudios.com/play-mp3/2910").play();
+    });
   }, []);
 
   const handlePieceDrop = (e) => {

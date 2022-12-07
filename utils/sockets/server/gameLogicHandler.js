@@ -95,7 +95,10 @@ export default (io, socket) => {
   const makeMove = (move) => {
     const chess = gamesInSession[socket.gameId].chess;
 
-    chess.move(move);
+    const isLegal = chess.move(move);
+    if (isLegal) {
+      socket.broadcast.to(socket.gameId).emit("moveMadeByOpponent");
+    }
 
     checkTimer();
 
