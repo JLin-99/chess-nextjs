@@ -24,6 +24,7 @@ export default function Home() {
 
     socket.on("connect", () => {
       setSocket(socket);
+      console.log("Id:", socket.id);
     });
 
     socket.on("disconnect", (reason) => {
@@ -32,8 +33,10 @@ export default function Home() {
 
     socket.on("connect_error", () => {
       setTimeout(() => {
-        socket.connect();
         console.log("Trying to reconnect");
+        socket.connect();
+
+        console.log("rId:", socket.id);
       }, 1000);
     });
   };
