@@ -26,8 +26,15 @@ export default function Home() {
       setSocket(socket);
     });
 
-    socket.on("disconnect", () => {
-      console.log("Disconnected from server");
+    socket.on("disconnect", (reason) => {
+      console.log("Disconnected from server:", reason);
+    });
+
+    socket.on("connect_error", () => {
+      setTimeout(() => {
+        socket.connect();
+        console.log("Trying to reconnect");
+      }, 1000);
     });
   };
 
